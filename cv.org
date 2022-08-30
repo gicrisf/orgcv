@@ -41,6 +41,8 @@ Per il supporto multilingua, bisogna anche installare Babel, che non è automati
 $ pip install Babel
 #+end_src
 
+Io preferisco usare un virtual environment, ma lascio comunque qui i comandi base per chi volesse semplificarsi la vita.
+
 ** Virtualenv
 In condizioni normali, questo è quello che faremmo per creare un virtual environment (chiamato =venv=).
 
@@ -62,6 +64,8 @@ Anziché attivarlo, limitiamoci a creare un virtual environment inequivocabilmen
 #+begin_src bash
 $ virtualenv cv-venv
 #+end_src
+
+# TODO: scriptare all'interno di questo file la creazione dell'environment.
 
 ** Virtualenv ed Emacs
 In Emacs le cose si fanno un po' più complicate.
@@ -118,7 +122,6 @@ which python
 #+END_SRC
 
 #+RESULTS:
-|                                                       |
 | /home/cromo/Projects/my-org-resume/cv-venv            |
 | /home/cromo/Projects/my-org-resume/cv-venv/bin/python |
 
@@ -149,10 +152,55 @@ except:
 
 Bene, ora possiamo procedere.
 
+* Environment
+[[https://jinja.palletsprojects.com/en/3.1.x/api/#basics][Dalla documentazione di Jinja2]]:
+
+#+begin_quote
+This will create a template environment with a loader that looks up templates in the templates folder inside the yourapp Python package (or next to the yourapp.py Python module). It also enables autoescaping for HTML files. This loader only requires that yourapp is importable, it figures out the absolute path to the folder for you.
+#+end_quote
+
+#+begin_src python :session cv-venv
+from jinja2 import Environment, PackageLoader, select_autoescape
+env = Environment(
+    loader=PackageLoader("orgcv"),
+    autoescape=select_autoescape()
+)
+#+end_src
+
+#+begin_quote
+To load a template from this environment, call the get_template() method, which returns the loaded Template.
+#+end_quote
+
+#+begin_src python
+template = env.get_template("mytemplate.html")
+#+end_src
+
+Non ho bisogno di scrivere necessariamente i template in file a parte.
+[[https://jinja.palletsprojects.com/en/3.1.x/api/#jinja2.Template][Potrei utilizzare il constructor di Jinja2]].
+
+#+begin_quote
+To render it with some variables, call the render() method.
+#+end_quote
+
+#+begin_src python
+print(template.render(the="variables", go="here"))
+#+end_src
+
+#+begin_quote
+Using a template loader rather than passing strings to Template or Environment.from_string() has multiple advantages. Besides being a lot easier to use it also enables template inheritance.
+#+end_quote
+
 * Data
 ** Personal Info
-#+begin_src python
-data = {
+Usiamo "context" come nome per il nostro dizionario ([[https://realpython.com/primer-on-jinja-templating/][è una convenzione]]):
+#+begin_quote
+Note: Using context as a name for the collection that stores the variables for a template is a convention. That said, you can name the dictionary differently if you prefer.
+#+end_quote
+
+Intendiamo ottenere questo dizionario:
+#+name: personalinfo-context
+#+begin_src python :session cv-venv
+context = {
     "name": "Giovanni Crisalfi",
     "photo": "propic-ciliegio.jpg",
     "tagline": "Studente",
@@ -166,7 +214,27 @@ data = {
     "dob": "27 Dicembre 1995",
     "driving": "Patente B",
 }
+
+return(context)
 #+end_src
+
+Ancora meglio! Potrei generarlo a partire da una tabella!
+
+#+name: personalinfo-table
+| "name"     | "Giovanni Crisalfi"                |
+| "photo"    | "propic-ciliegio.jpg"              |
+| "tagline"  | "Studente"                         |
+| "homepage" | "www.zwitterio.it"                 |
+| "email"    | "giovanni.crisalfi@protonmail.com" |
+| "phone"    | "+39 3331604917"                   |
+| "location" | "Caltagirone, CT"                  |
+| "github"   | "gicrisf"                          |
+| "twitter"  | "gicrisf"                          |
+| "dob"      | "27 Dicembre 1995"                 |
+| "driving"  | "Patente B"                        |
+
+La tabella mi produce una lista di righe. Per ogni riga troviamo una lista degli elementi nella colonna indicata.
+Possiamo convertirla in dizionario successivamente.
 
 * LaTeX
 L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
@@ -319,6 +387,44 @@ Oppure (oppure) potrei aggiungere questo blocco direttamente alla configurazione
   \driving{Patente B}
 }
 #+end_src
+
+#+name: personalinfo-jinja-latex
+#+begin_src latex
+\name{ {{context.name}} }
+\photoR{2.8cm}{propic-ciliegio.jpg}
+\tagline{Studente}
+
+\personalinfo{
+  \homepage{www.zwitterio.it}
+  \email{giovanni.crisalfi@protonmail.com}
+  \phone{+39 3331604917}
+  \location{Caltagirone, CT}
+  \github{gicrisf}
+  \twitter{gicrisf}
+  % \linkedin{aidan-scannell-82522789/}
+  \dob{27 Dicembre 1995}
+  \driving{Patente B}
+}
+#+end_src
+
+#+begin_src python :results output :var context=personalinfo-table
+import jinja2
+
+# Convert to dictionary
+ctx = {}
+for elem in context:
+    ctx[elem[0]] = elem[1]
+
+# print(ctx)
+
+environment = jinja2.Environment()
+template = environment.from_string("Hello, {{ name }}!")
+
+print(template.render(name="World"))
+#+end_src
+
+#+RESULTS:
+: Hello, World!
 
 *** Column 1
 **** Personal Statement
