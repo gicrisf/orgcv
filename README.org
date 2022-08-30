@@ -1,0 +1,12 @@
+#+title: Org mode CV
+#+author: Giovanni Crisalfi
+
+My Org-mode Curriculum Vitae.
+
+** Donate
+Why don't you help me keeping myself awake buying me a coffee?
+
+[[https://ko-fi.com/V7V425BFU][https://ko-fi.com/img/githubbutton_sm.svg]]
+
+** License
+Open sourced under the [[./LICENSE][MIT License]].

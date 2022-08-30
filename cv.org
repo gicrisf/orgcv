@@ -1,0 +1,477 @@
+#+title: Literate CV
+#+author: Giovanni Crisalfi
+
+* Introduzione
+Innanzitutto devo rappresentare in qualche modo i dati da riportare nei codici da intessere nelle parti successive. Ho molte opzioni. In JSON non se ne parla proprio. Sarebbe già più accettabile scrivere in TOML, ma in verità le opzioni che mi convincono di più sono due:
+- Python dictionaries
+- Elisp association lists
+
+Il primo per la sua semplicità, potenziale estensibilità (ogni dato scritto può essere manipolato dagli altri presenti all'interno del blocco, come con la configurazione di Pelican) e buona integrazione con org-babel. Il secondo per l'integrazione assoluta con org-babel ed Emacs in generale.
+
+L'idea è quella di collezionare blocchi di dati modulari, così da esportare varie versioni dello stesso CV con lo stesso Header, per esempio o, comunque, condividendo certi blocchi di dati senza ridondanze di sorta. Scrivendo dizionari Python, potrei iniettare i dati nel testo LaTeX in almeno tre modi:
+- Manipolazione delle stringhe classica
+- Motore di templating (Jinja2, per esempio, ma questo mi costringerebbe ad avere dipendenze)
+- Attraverso PyLaTeX (ma, anche qui, dovrei disporre della dipendenza)
+
+Avere dipendenze esterne non è un grave problema, soprattutto in Python, ma vorrei mantenere questo file quanto più flessibile possibile.
+Il bello di Jinja2 è che potrebbe aiutarmi a gestire l'internazionalizzazione (con Babel), quindi credo che il gioco valga la candela.
+Potrei ottenere le stesse cose in emacs-lisp, ma temo che risulterebbero meno leggibili.
+Inoltre, con Jinja2 posso facilmente esportare anche delle pagine HTML e sarebbe molto molto semplice gestire i for loops, cosa che mi tornerà utile per ripetere gli stessi template su progetti, lingue ecc. su tutte le versioni del CV (LaTeX, HTML, Markdown...)
+
+Non c'è dubbio che un motore di templating sia esattamente quello che ci serve in questa situazione per mantenere il codice leggibile e flessibile: importiamolo.
+
+#+begin_quote
+ATTENZIONE!
+
+Per i più disattenti, il CV non può essere renderizzato senza alcune piccole dipendenze Python. Installatele.
+#+end_quote
+
+Come si installa Jinja2? [[https://jinja.palletsprojects.com/en/3.1.x/intro/#installation][Basta dare un occhio alla documentazione]].
+
+** Installazione globale
+Usare un [[https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments][virtual environment]] è preferibile, ma installare globalmente è più semplice:
+
+#+begin_src bash
+$ pip install Jinja2
+#+end_src
+
+Per il supporto multilingua, bisogna anche installare Babel, che non è automaticamente incluso tra le dipendenze.
+
+#+begin_src bash
+$ pip install Babel
+#+end_src
+
+** Virtualenv
+In condizioni normali, questo è quello che faremmo per creare un virtual environment (chiamato =venv=).
+
+#+begin_src bash
+$ mkdir myproject
+$ cd myproject
+$ virtualenv venv
+New python executable in venv/bin/python
+Installing distribute............done.
+#+end_src
+
+Questo per attivarlo:
+#+begin_src bash
+$ . venv/bin/activate
+#+end_src
+
+Anziché attivarlo, limitiamoci a creare un virtual environment inequivocabilmente utile alla produzione del CV e lasciamolo in attesa.
+
+#+begin_src bash
+$ virtualenv cv-venv
+#+end_src
+
+** Virtualenv ed Emacs
+In Emacs le cose si fanno un po' più complicate.
+Da StackOverlow:
+- [[https://stackoverflow.com/questions/38535499/how-to-setup-emacs-to-use-a-given-python-virtualenv][How to setup Emacs to use a given Python virtualenv?]]
+- [[https://stackoverflow.com/questions/53992886/org-babel-python-environment-setup][org-babel python environment setup]]
+
+Anche sulla base di [[https://justin.abrah.ms/dotfiles/emacs.html][alcune literate conf di Emacs]], pare che l'opzione più quotata sia utilizzare un pacchetto Emacs che fa da tramite, [[https://github.com/jorgenschaefer/pyvenv][pyvenv]].
+
+#+begin_quote
+The main entry points are pyvenv-activate, which queries the user for a virtual environment directory to activate, and pyvenv-workon, which queries for a virtual environment in $WORKON_HOME (from virtualenvwrapper.sh).
+#+end_quote
+
+Per installarlo classicamente, aggiungere questo ad =init.el=:
+
+#+begin_src emacs-lisp
+(use-package pyvenv
+  :ensure t
+  :config
+  (pyvenv-mode t)
+#+end_src
+
+Io, invece, installerò attraverso la mia literate configuration su Doom Emacs.
+
+E se volessimo selezionare un interpreter in particolare?
+[[https://blog.fredrikmeyer.net/2020/08/26/emacs-python-venv.html][Fredrik Meyer sul suo blog offre una soluzione]]:
+
+#+begin_src emacs-lisp
+;; Set correct Python interpreter
+(setq pyvenv-post-activate-hooks
+      (list (lambda ()
+              (setq python-shell-interpreter (concat pyvenv-virtual-env "bin/python3")))))
+
+(setq pyvenv-post-deactivate-hooks
+      (list (lambda ()
+              (setq python-shell-interpreter "python3")))))
+#+end_src
+
+** Virtualenv ed Emacs/Org-mode
+Org-mode aggiunge un ulteriore layer che ci complica un pochino le cose.
+
+https://emacs.stackexchange.com/questions/24267/using-org-babel-to-enable-virtualenv
+
+#+BEGIN_SRC elisp :session cv-venv :results none
+;; doesn't return any value or output, so I'm silencing this block
+(pyvenv-activate "~/Projects/my-org-resume/cv-venv")
+#+END_SRC
+
+Verifichiamo che sia stato attivato.
+
+#+BEGIN_SRC sh :session cv-venv
+echo $VIRTUAL_ENV
+which python
+#+END_SRC
+
+#+RESULTS:
+|                                                       |
+| /home/cromo/Projects/my-org-resume/cv-venv            |
+| /home/cromo/Projects/my-org-resume/cv-venv/bin/python |
+
+#+BEGIN_SRC python :results output :session cv-venv
+import sys
+print('\n'.join(sys.path))
+#+END_SRC
+
+#+RESULTS:
+:
+: /usr/lib/python310.zip
+: /usr/lib/python3.10
+: /usr/lib/python3.10/lib-dynload
+: /home/cromo/Projects/my-org-resume/cv-venv/lib/python3.10/site-packages
+
+Vediamo se l'importazione dei nuovi pacchetti è riuscita:
+#+begin_src python :results output :session cv-venv
+try:
+    import jinja2
+    import babel
+    print("succeded")
+except:
+    print("failed")
+#+end_src
+
+#+RESULTS:
+: succeded
+
+Bene, ora possiamo procedere.
+
+* Data
+** Personal Info
+#+begin_src python
+data = {
+    "name": "Giovanni Crisalfi",
+    "photo": "propic-ciliegio.jpg",
+    "tagline": "Studente",
+    "homepage": "www.zwitterio.it",
+    "email": "giovanni.crisalfi@protonmail.com",
+    "phone": "+39 3331604917",
+    "location": "Caltagirone, CT",
+    "github": "gicrisf",
+    "twitter": "gicrisf",
+    # "linkedin": "giovanni.crisalfi",
+    "dob": "27 Dicembre 1995",
+    "driving": "Patente B",
+}
+#+end_src
+
+* LaTeX
+L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
+
+Oppure (oppure) potrei aggiungere questo blocco direttamente alla configurazione di Emacs e togliermi il pensiero, tanto non li voglio mai comunque.
+
+#+begin_src emacs-lisp
+(setq org-latex-logfiles-extensions (quote ("lof" "lot" "tex~" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl" "xmpi" "run.xml" "bcf")))
+#+end_src
+
+** Head
+*** Class
+#+name: class-latex
+#+begin_src latex
+\documentclass[10pt,a4paper,ragged2e,withhyper]{altacv}
+#+end_src
+
+*** Layout
+#+name: layout-latex
+#+begin_src latex
+% Change the page layout if you need to
+\geometry{left=1.25cm,right=1.25cm,top=1.5cm,bottom=1.5cm,columnsep=1.2cm}
+#+end_src
+
+*** Fonts
+**** Commands
+#+name: fonts-latex
+#+begin_src latex
+% Use roboto and lato for fonts
+\renewcommand{\familydefault}{\sfdefault}
+
+% Change some fonts, if necessary
+\renewcommand{\namefont}{\Huge\rmfamily\bfseries}
+\renewcommand{\personalinfofont}{\footnotesize}
+\renewcommand{\cvsectionfont}{\LARGE\rmfamily\bfseries}
+\renewcommand{\cvsubsectionfont}{\large\bfseries}
+#+end_src
+
+**** Packages
+#+name: font-packages-latex
+#+begin_src latex
+\usepackage[rm]{roboto}
+\usepackage[defaultsans]{lato}
+#+end_src
+
+*** Colors
+#+name: colors-latex
+#+begin_src latex
+% Change the colours if you want to
+\definecolor{SlateGrey}{HTML}{2E2E2E}
+\definecolor{LightGrey}{HTML}{666666}
+\definecolor{DarkPastelRed}{HTML}{450808}
+\definecolor{PastelRed}{HTML}{8F0D0D}
+\definecolor{GoldenEarth}{HTML}{E7D192}
+
+\colorlet{name}{black}
+\colorlet{tagline}{PastelRed}
+\colorlet{heading}{DarkPastelRed}
+\colorlet{headingrule}{GoldenEarth}
+\colorlet{subheading}{PastelRed}
+\colorlet{accent}{PastelRed}
+\colorlet{emphasis}{SlateGrey}
+\colorlet{body}{LightGrey}
+#+end_src
+
+*** Bullets
+#+name: bullets-latex
+#+begin_src latex
+% Change the bullets for itemize and rating marker
+% for cvskill if you want to
+\renewcommand{\itemmarker}{{\small\textbullet}}
+\renewcommand{\ratingmarker}{\faCircle}
+#+end_src
+
+*** Columns
+#+name: columns-latex
+#+begin_src latex
+\usepackage{paracol}
+\columnratio{0.6} % Set the left/right column width ratio to 6:4.
+#+end_src
+
+*** Footnotes
+#+name: footnotes-latex
+#+begin_src latex
+\usepackage[bottom]{footmisc}
+#+end_src
+
+*** Bibliography
+#+name: bib-latex
+#+begin_src latex
+\DeclareNameAlias{sortname}{given-family}
+
+\addbibresource{aidan.bib}
+
+\usepackage[style=trad-abbrv,sorting=none,sortcites=true,doi=false,url=false,giveninits=true,hyperref]{biblatex}
+#+end_src
+
+*** Exporter
+#+name: exporter-latex
+#+begin_src latex
+\author{Giovanni Crisalfi}
+\date{\today}
+\title{}
+#+end_src
+
+*** Weave
+#+begin_src latex :noweb no-export
+% Created 2022-07-27 mer 04:05
+% Intended LaTeX compiler: pdflatex
+
+<<class-latex>>
+
+<<layout-latex>>
+
+<<fonts-latex>>
+
+<<colors-latex>>
+
+<<bullets-latex>>
+
+<<font-packages-latex>>
+
+<<columns-latex>>
+
+<<footnotes-latex>>
+
+<<bib-latex>>
+
+<<exporter-latex>>
+#+end_src
+
+** Document
+*** Header
+**** Personal Info
+#+name: personalinfo-latex
+#+begin_src latex
+\name{Giovanni Crisalfi}
+\photoR{2.8cm}{propic-ciliegio.jpg}
+\tagline{Studente}
+
+\personalinfo{
+  \homepage{www.zwitterio.it}
+  \email{giovanni.crisalfi@protonmail.com}
+  \phone{+39 3331604917}
+  \location{Caltagirone, CT}
+  \github{gicrisf}
+  \twitter{gicrisf}
+  % \linkedin{aidan-scannell-82522789/}
+  \dob{27 Dicembre 1995}
+  \driving{Patente B}
+}
+#+end_src
+
+*** Column 1
+**** Personal Statement
+#+name: personal-statement-latex
+#+begin_src latex
+\begin{quote}
+Studente di CTF appassionato di spettroscopia e simulazioni computazionali.
+Sostenitore dell'Open Source, vivo su Linux e scrivo sia codice che prosa su Emacs.
+Mi interesso di epistemologia, cinema, fumetti e altre lettere.
+\end{quote}
+#+end_src
+
+**** Publications
+Non voglio esportare, quindi non aggiungo al blocco di tessitura (weaving)
+
+#+name: publications-latex
+#+begin_export latex
+\nocite{*}
+% \printbibliography[heading=pubtype,title={\printinfo{\faBook}{Books}},type=book]
+% \divider
+% \printbibliography[heading=pubtype,title={\printinfo{\faFile*[regular]}{Journal Articles}},type=article]
+% \divider
+\printbibliography[heading=pubtype,title={\printinfo{\faUsers}{Conference Proceedings}},type=inproceedings]
+#+end_export
+
+**** Progetti
+#+name: projects-latex
+#+begin_src
+#+end_src
+
+**** Seminari
+#+name: seminari-latex
+#+begin_src
+#+end_src
+
+*** Column 2
+**** Competenze
+#+name: competenze-latex
+#+begin_src latex
+\cvtag{Analisi farmaceutica}
+\cvtag{Grafica}
+\cvtag{Data viz}
+
+\vspace{-.1cm}
+
+\cvtag{Rust}
+\cvtag{Vala}
+\cvtag{Python}
+\cvtag{JavaScript}
+
+\vspace{.1cm}
+
+\cvtag{Lisp}
+\cvtag{GTK}
+\cvtag{HTML/CSS}
+\cvtag{Git}
+#+end_src
+
+**** Esperienze
+#+name: esperienze-latex
+#+begin_src latex
+\cvevent{Tirocinio in Farmacia Ospedaliera}{ Ospedale Gravina di Caltagirone}{ Ottobre 2020 - Luglio 2021}{}
+
+\par\divider
+
+\cvevent{Tirocinio per tesi sperimentale}{ Dipartimento di Chimica "Giacomo Ciamician" - Unibo}{ Ottobre 2019 - Maggio 2020}{}
+#+end_src
+
+**** Istruzione
+#+name: istruzione-latex
+#+begin_src latex
+\cvevent{Summer School in Pharmaceutical Analysis}{ Campus di Rimini - Palazzo Ruffi-Briolini}{ 18 Sett. 2017 – 20 Sett. 2017}{}
+\begin{itemize}
+\item Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies
+\end{itemize}
+
+\divider
+
+\cvevent{Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche}{ Dipartimento di Farmacia e Biotecnologie FABIT | Università di Bologna}{ Sett. 2014 -- In corso}{}
+
+\divider
+
+\cvevent{Diploma}{ Liceo Scientifico E. Majorana | Caltagirone}{ Sett. 2009 -- Giugno 2014}{}
+#+end_src
+
+**** Lingue
+#+begin_export latex
+\cvsection{Lingue}
+
+\cvskill{Italiano}{5}
+\divider
+
+\cvskill{Inglese}{4}
+\divider
+
+\cvskill{Francese}{1}
+
+% %% Yeah I didn't spend too much time making all the
+% %% spacing consistent... sorry. Use \smallskip, \medskip,
+% %% \bigskip, \vpsace etc to make ajustments.
+% \medskip
+#+end_export
+
+*** Weave
+#+begin_src latex :noweb no-export
+\begin{document}
+
+<<main-header-latex>>
+
+<<personalinfo-latex>>
+
+\makecvheader
+
+\begin{paracol}{2}
+
+<<personal-statement-latex>>
+
+\vspace{.1cm}
+
+\cvsection{Progetti}
+\label{sec:org9314928}
+
+<<projects-latex>>
+
+\cvsection{Seminari}
+\label{sec:org1d737ad}
+
+<<seminari-latex>>
+
+\switchcolumn
+
+\cvsection{Competenze}
+\label{sec:orga689fa6}
+
+<<competenze-latex>>
+
+\cvsection{Esperienze}
+\label{sec:org5a7829c}
+
+<<esperienze-latex>>
+
+\cvsection{Istruzione}
+\label{sec:org75d0adb}
+
+<<istruzione-latex>>
+
+\cvsection{Lingue}
+
+<<lingue-latex>>
+
+\end{paracol}
+\end{document}
+#+end_src
+
+* Markdown
+Qui potrei usare ox-hugo
