@@ -1081,9 +1081,7 @@ Mi interesso di epistemologia, cinema, fumetti e altre lettere.
 #+name: projects-jinja-latex
 #+begin_src latex :results output
 {% for project in projects %}
-\cvevent{ {%- if project.name -%}{{project.name}}{%- endif -%} }
-  { {%- if project.description -%}{{project.description}}{%- endif -%} }
-  { {%- if project.when -%}{{project.when}}{%- endif -%} } {}
+\cvevent{ {%- if project.name -%}{{project.name}}{%- endif -%} }{ {%- if project.description -%}{{project.description}}{%- endif -%} }{ {%- if project.when -%}{{project.when}}{%- endif -%} }{}
 
 \begin{itemize}
 \item \href{ {{project.link.href}} }{\fa{{ project.link.icon }} {{ project.link.text }}}
@@ -1093,7 +1091,9 @@ Mi interesso di epistemologia, cinema, fumetti e altre lettere.
 {% for tag in project.tags %}
 \cvtag{ {{tag}} }
 {% endfor %}
+{% if not loop.last %}
 \par\divider
+{% endif %}
 {% endfor %}
 #+end_src
 
@@ -1117,9 +1117,7 @@ print(template.render(projects=projects))
 
 #+RESULTS: projects-latex
 #+begin_export latex
-\cvevent{Esrafel}
-  {Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods}
-  {Marzo 2020 - Marzo 2022} {}
+\cvevent{Esrafel}{Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods}{Marzo 2020 - Marzo 2022}{}
 
 \begin{itemize}
 \item \href{ https://github.com/gicrisf/esrafel }{\faGithub gicrisf/esrafel}
@@ -1131,9 +1129,7 @@ print(template.render(projects=projects))
 \cvtag{ GTK }
 \cvtag{ Spettroscopia }
 \par\divider
-\cvevent{Zhuia}
-  {An elegant but still playful theme for Zola}
-  {Feb. 2022 - Marzo 2022} {}
+\cvevent{Zhuia}{An elegant but still playful theme for Zola}{Feb. 2022 - Marzo 2022}{}
 
 \begin{itemize}
 \item \href{ https://github.com/gicrisf/zhuia }{\faGithub gicrisf/zhuia}
@@ -1147,24 +1143,7 @@ print(template.render(projects=projects))
 \cvtag{ Liquid }
 \cvtag{ Jinja2 }
 \par\divider
-\cvevent{Gotosi}
-  {Isotope oriented periodic table of elements}
-  {Feb. 2021 - Maggio 2021} {}
-
-\begin{itemize}
-\item \href{ https://github.com/gicrisf/gotosi }{\faGithub gicrisf/gotosi}
-\end{itemize}
-\vspace{.2cm}
-
-\cvtag{ Desktop dev. }
-\cvtag{ Vala }
-\cvtag{ C }
-\cvtag{ GTK }
-\cvtag{ Chemistry }
-\par\divider
-\cvevent{3D renders}
-  {Bio/Chem molecular renders for fun and blogging}
-  {} {}
+\cvevent{3D renders}{Bio/Chem molecular renders for fun and blogging}{}{}
 
 \begin{itemize}
 \item \href{ https://unsplash.com/@gicrisf }{\faUnsplash @gicrisf}
@@ -1175,7 +1154,6 @@ print(template.render(projects=projects))
 \cvtag{ Chimica }
 \cvtag{ GIMP }
 \cvtag{ VMD }
-\par\divider
 #+end_export
 
 **** Seminari
@@ -1184,7 +1162,9 @@ print(template.render(projects=projects))
 {% for seminario in seminari %}
 \cvevent{ {%- if seminario.name -%} {{seminario.name}}{%- endif -%} }{ {%- if seminario.where -%} {{seminario.where}}{%- endif -%} }{ {%- if seminario.when -%} {{seminario.when}}{%- endif -%} }{}
 
+{% if not loop.last %}
 \par\divider
+{% endif %}
 {% endfor %}
 #+end_src
 
@@ -1202,19 +1182,16 @@ print(template.render(seminari=seminari))
 
 #+RESULTS: seminari-latex
 #+begin_export latex
-[{"name": "Diploma Liceo Scientifico", "where": "Liceo Scientifico E. Majorana - Caltagirone", "when": "Sett. 2009 - Giugno 2014"}, {"name": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche", "where": "Dipartimento di Farmacia e Biotecnologie FABIT - Universit\u00e0 di Bologna", "when": "Sett. 2014 - In corso"}, {"name": "Summer School in Pharmaceutical Analysis", "where": "Campus di Rimini - Palazzo Ruffi-Briolini", "when": "18 Sett. 2017 - 20 Sett. 2017", "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"}]
-\cvevent{Diploma Liceo Scientifico}{Liceo Scientifico E. Majorana - Caltagirone}{Sett. 2009 - Giugno 2014}{}
+\cvevent{Festival della Scienza Medica}{Palazzo Re Enzo - piazza Nettuno 1 - Bologna}{Anni: 2016 - 2017 - 2018 - 2019}{}
 
-\divider
-\cvevent{Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche}{Dipartimento di Farmacia e Biotecnologie FABIT - Università di Bologna}{Sett. 2014 - In corso}{}
+\par\divider
+\cvevent{18° Congresso Nazionale Sitox}{Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna}{10 Apr. 2018 - 13 Apr. 2018}{}
 
-\divider
-\cvevent{Summer School in Pharmaceutical Analysis}{Campus di Rimini - Palazzo Ruffi-Briolini}{18 Sett. 2017 - 20 Sett. 2017}{}
-\begin{itemize}
-\item Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies
-\end{itemize}
+\par\divider
+\cvevent{Driving the development of bio-based polymers with molecular simulation}{Chemistry World Webinar}{13 Apr. 2022}{}
 
-\divider
+\par\divider
+\cvevent{Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy}{Chemistry World Webinar}{24 Maggio 2022}{}
 #+end_export
 
 *** Column 2
