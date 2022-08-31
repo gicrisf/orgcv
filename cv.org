@@ -16,17 +16,19 @@ L'idea è quella di collezionare blocchi di dati modulari, così da esportare va
 Avere dipendenze esterne non è un grave problema, soprattutto in Python, ma vorrei mantenere questo file quanto più flessibile possibile.
 Il bello di Jinja2 è che potrebbe aiutarmi a gestire l'internazionalizzazione (con Babel), quindi credo che il gioco valga la candela.
 Potrei ottenere le stesse cose in emacs-lisp, ma temo che risulterebbero meno leggibili.
-Inoltre, con Jinja2 posso facilmente esportare anche delle pagine HTML e sarebbe molto molto semplice gestire i for loops, cosa che mi tornerà utile per ripetere gli stessi template su progetti, lingue ecc. su tutte le versioni del CV (LaTeX, HTML, Markdown...)
+Inoltre, con Jinja2 posso facilmente esportare anche delle pagine HTML e sarebbe molto molto semplice gestire i for loops, cosa che mi tornerà utile per ripetere gli stessi template su progetti, lingue ecc. su tutte le versioni del CV (LaTeX, HTML, Markdown...). Considerate tutte queste premesse, non c'è dubbio che un motore di templating sia esattamente quello che ci serve in questa situazione per mantenere il codice leggibile e flessibile.
 
-Non c'è dubbio che un motore di templating sia esattamente quello che ci serve in questa situazione per mantenere il codice leggibile e flessibile: importiamolo.
+Non ci resta che costruire un ambiente Python adatto.
 
+* Python environment
 #+begin_quote
 ATTENZIONE!
 
-Per i più disattenti, il CV non può essere renderizzato senza alcune piccole dipendenze Python. Installatele.
+Per i più disattenti, il CV non può essere renderizzato senza alcune piccole dipendenze Python.
 #+end_quote
 
-Come si installa Jinja2? [[https://jinja.palletsprojects.com/en/3.1.x/intro/#installation][Basta dare un occhio alla documentazione]].
+Come si installa Jinja2?
+[[https://jinja.palletsprojects.com/en/3.1.x/intro/#installation][Basta dare un occhio alla documentazione]].
 
 ** Installazione globale
 Usare un [[https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments][virtual environment]] è preferibile, ma installare globalmente è più semplice:
@@ -109,33 +111,22 @@ Org-mode aggiunge un ulteriore layer che ci complica un pochino le cose.
 
 https://emacs.stackexchange.com/questions/24267/using-org-babel-to-enable-virtualenv
 
-#+BEGIN_SRC elisp :session cv-venv :results none
+#+BEGIN_SRC elisp :session cv-venv :results silent
 ;; doesn't return any value or output, so I'm silencing this block
 (pyvenv-activate "~/Projects/my-org-resume/cv-venv")
 #+END_SRC
 
-Verifichiamo che sia stato attivato.
+Verifichiamo che sia stato attivato (result is silenced, look at the minibuffer).
 
-#+BEGIN_SRC sh :session cv-venv
+#+BEGIN_SRC sh :session cv-venv :results silent
 echo $VIRTUAL_ENV
 which python
 #+END_SRC
 
-#+RESULTS:
-| /home/cromo/Projects/my-org-resume/cv-venv            |
-| /home/cromo/Projects/my-org-resume/cv-venv/bin/python |
-
-#+BEGIN_SRC python :results output :session cv-venv
+#+BEGIN_SRC python :results silent :session cv-venv
 import sys
 print('\n'.join(sys.path))
 #+END_SRC
-
-#+RESULTS:
-:
-: /usr/lib/python310.zip
-: /usr/lib/python3.10
-: /usr/lib/python3.10/lib-dynload
-: /home/cromo/Projects/my-org-resume/cv-venv/lib/python3.10/site-packages
 
 Vediamo se l'importazione dei nuovi pacchetti è riuscita:
 #+begin_src python :results output :session cv-venv
@@ -152,7 +143,7 @@ except:
 
 Bene, ora possiamo procedere.
 
-* Environment
+* Jinja environment
 [[https://jinja.palletsprojects.com/en/3.1.x/api/#basics][Dalla documentazione di Jinja2]]:
 
 #+begin_quote
@@ -193,32 +184,32 @@ Using a template loader rather than passing strings to Template or Environment.f
 * Data
 ** Personal Info
 Usiamo "context" come nome per il nostro dizionario ([[https://realpython.com/primer-on-jinja-templating/][è una convenzione]]):
+
 #+begin_quote
 Note: Using context as a name for the collection that stores the variables for a template is a convention. That said, you can name the dictionary differently if you prefer.
 #+end_quote
 
-Intendiamo ottenere questo dizionario:
-#+name: personalinfo-context
+Intendiamo ottenere un dizionario di questo genere:
+
 #+begin_src python :session cv-venv
-context = {
+basics = {
     "name": "Giovanni Crisalfi",
     "photo": "propic-ciliegio.jpg",
-    "tagline": "Studente",
-    "homepage": "www.zwitterio.it",
-    "email": "giovanni.crisalfi@protonmail.com",
-    "phone": "+39 3331604917",
-    "location": "Caltagirone, CT",
-    "github": "gicrisf",
-    "twitter": "gicrisf",
-    # "linkedin": "giovanni.crisalfi",
-    "dob": "27 Dicembre 1995",
+    # ...
     "driving": "Patente B",
 }
-
-return(context)
 #+end_src
 
-Ancora meglio! Potrei generarlo a partire da una tabella!
+Potremmo scrivere i dati direttamente nel dizionario e far comunicare i blocchi, ma poi dipenderemmo dall'esecuzione del codice in sequenza per passare i dati da un blocco all'altro.
+
+È più comodo passare i dati attraverso le variabili org-babel, quindi generare i dati a partire da una tabella in org-mode. Inoltre, è anche più facile da manipolare.
+Possiamo inserire le stringhe tra virgolette o senza, non fa differenza.
+
+#+begin_quote
+ATTENZIONE!
+
+La tabella qui sotto è quella che va modificata. Il dizionario poco sopra è solo a titolo d'esempio.
+#+end_quote
 
 #+name: personalinfo-table
 | "name"     | "Giovanni Crisalfi"                |
@@ -233,8 +224,352 @@ Ancora meglio! Potrei generarlo a partire da una tabella!
 | "dob"      | "27 Dicembre 1995"                 |
 | "driving"  | "Patente B"                        |
 
-La tabella mi produce una lista di righe. Per ogni riga troviamo una lista degli elementi nella colonna indicata.
-Possiamo convertirla in dizionario successivamente.
+La tabella mi produce una lista di righe. Per ogni riga troviamo una lista degli elementi nella colonna indicata. Possiamo convertirla in dizionario python in una seconda fase, così:
+
+#+begin_src python :results output :var table=personalinfo-table
+# Convert to dictionary
+basics = {}
+for elem in table:
+    basics[elem[0]] = elem[1]
+
+print(basics)
+#+end_src
+
+#+RESULTS:
+: {'name': 'Giovanni Crisalfi', 'photo': 'propic-ciliegio.jpg', 'tagline': 'Studente', 'homepage': 'www.zwitterio.it', 'email': 'giovanni.crisalfi@protonmail.com', 'phone': '+39 3331604917', 'location': 'Caltagirone, CT', 'github': 'gicrisf', 'twitter': 'gicrisf', 'dob': '27 Dicembre 1995', 'driving': 'Patente B'}
+
+Il problema di questa soluzione è che non si adatta alle fasi successive, in cui le relazioni sono meno tabulabili, per esempio quando tocca occuparsi dei progetti, le esperienze lavorative.
+E allora la cosa più ragionevole sembra quella di scrivere:
+- JSON/Python dict
+- Alist/Plist in Emacs-lisp
+
+Cioè delle strutture più flessibili.
+
+Credo che la cosa più conveniente sia continuare a lavorare in Python, quindi coi python dictionaries, ma passando i dati da un blocco all'altro come stringhe JSON.
+In questo modo evitiamo di fare casini durante i trasferimenti, creiamo un sistema che potrebbe potenzialmente essere gestito fuori da org-mode (come [[https://jsonresume.org/][JSON resume]]) ed evitiamo pure di scrivere lisp. Vorrei che questo testo sia comprensibile a quante più persone possibili e so bene che lisp tende ad intimidire qualcuno. Teniamoci sul mainstream, insomma.
+
+Cominciamo con l'aggiungere i dati personali dalla tabella qui sopra.
+
+#+name: personalinfo-json
+#+begin_src python :sessions cv-venv :results output :var basics_table=personalinfo-table
+import json
+basics = {}
+for elem in basics_table:
+    basics[elem[0]] = elem[1]
+
+print(json.dumps(basics))
+#+end_src
+
+#+RESULTS: personalinfo-json
+: {"name": "Giovanni Crisalfi", "photo": "propic-ciliegio.jpg", "tagline": "Studente", "homepage": "www.zwitterio.it", "email": "giovanni.crisalfi@protonmail.com", "phone": "+39 3331604917", "location": "Caltagirone, CT", "github": "gicrisf", "twitter": "gicrisf", "dob": "27 Dicembre 1995", "driving": "Patente B"}
+
+# Il problema di questo metodo è che rende l'assemblaggio del JSON un po' noioso ed inutilmente sequenziale. Sarebbe assai più comodo se organizzassimo un dizionario python senza passare da JSON e poi facessimo un dump finale in caso di necessità.
+# La migliore strategia che mi viene in mente per lavorare in python e ridurre questa intricata filatura di stringhe (e sempre evitando l'esecuzione di un blocco unico sul modello dei Jupyter Notebooks) è fare uso della sintassi noweb ed integrare nello stesso blocco sia il dato che la funzione che lo esporta.
+
+Cosa ce ne facciamo di questo risultato?
+Aspettiamo di arrivare alla fine ed integriamo tutti i dizionari in un unico dizionario onnicomprensivo che faccia poi da contesto per la generazione in Jinja2.
+L'importazione avverrà così, convertendo ogni JSON parziale in un dizionario python che sarà assegnato a una variabile, la quale potrà facilmente essere inclusa in un altro dizionario.
+In questo modo, ogni cambiamento sarà modulare e non richiederà l'intervento su tutti i blocchi di volta in volta.
+
+#+begin_src python :results output :noweb no-export eval
+import json
+basics = json.loads(
+    """
+    <<personalinfo-json()>>
+    """
+)
+
+print(imported)
+#+end_src
+
+#+RESULTS:
+: {'name': 'Giovanni Crisalfi', 'photo': 'propic-ciliegio.jpg', 'tagline': 'Studente', 'homepage': 'www.zwitterio.it', 'email': 'giovanni.crisalfi@protonmail.com', 'phone': '+39 3331604917', 'location': 'Caltagirone, CT', 'github': 'gicrisf', 'twitter': 'gicrisf', 'dob': '27 Dicembre 1995', 'driving': 'Patente B'}
+
+Questo metodo consente anche di importare delle semplici stringhe con maggiore facilità, come vedremo coi "personal statement".
+Purtroppo, c'è un limite alla memoria in stack che possiamo pretendere noweb usi per conservare le stringhe generate, quindi in base alla situazione potremmo ottenere questo errore:
+
+#+begin_quote
+rx--translate-**: Lisp nesting exceeds ‘max-lisp-eval-depth’
+#+end_quote
+
+Bisogna evitare un nesting eccessivo, ma questo torna utile anche per mantenere il codice pulito.
+
+** Personal Statements
+*** IT
+#+name: personal-statement-it
+#+begin_src org :results output
+Studente di CTF appassionato di spettroscopia e simulazioni computazionali.
+Sostenitore dell'Open Source, vivo su Linux e scrivo sia codice che prosa su Emacs.
+Mi interesso di epistemologia, cinema, fumetti e altre lettere.
+#+end_src
+
+*** EN
+#+name: personal-statement-en
+#+begin_src org :results output
+Medicinal chemistry student at Unibo • Into spectroscopy and radicals • Linux citizen • Coding in Rust • Scripting in Python/Lisp • Reading and writing around.
+#+end_src
+
+** Projects
+#+name: projects-dict
+#+begin_src python :session cv-venv :results output :noweb no-export eval
+projects = []
+projects.append(esrafel)
+projects.append(zhuia)
+projects.append(gotosi)
+projects.append(unsplash)
+
+print(json.dumps(projects))
+#+end_src
+
+*** Esrafel
+#+name: esrafel-project
+#+begin_src python :session cv-venv :results output
+esrafel = {
+    "name": "Esrafel",
+    "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods",
+    "when": "Marzo 2020 - Marzo 2022",
+    "link": {
+        "icon": "Github",
+        "text": "gicrisf/esrafel",
+        "href": "https://github.com/gicrisf/esrafel"
+    },
+    "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]
+}
+
+print(json.dumps(esrafel))
+#+end_src
+
+#+RESULTS: esrafel-project
+: {"name": "Esrafel", "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods", "when": "Marzo 2020 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/esrafel", "href": "https://github.com/gicrisf/esrafel"}, "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]}
+
+**** TODO Decoratore
+Per non scrivere sempre =print(json.dumps(X))=, potrei scrivere un decoratore.
+
+*** Zhuia
+#+name: zhuia-project
+#+begin_src python :session cv-venv :results output
+zhuia = {
+    "name": "Zhuia",
+    "description": "An elegant but still playful theme for Zola",
+    "when": "Feb. 2022 - Marzo 2022",
+    "link": {
+        "icon": "Github",
+        "text": "gicrisf/zhuia",
+        "href": "https://github.com/gicrisf/zhuia"
+    },
+    "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]
+}
+
+print(json.dumps(zhuia))
+#+end_src
+
+#+RESULTS: zhuia-project
+: {"name": "Zhuia", "description": "An elegant but still playful theme for Zola", "when": "Feb. 2022 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/zhuia", "href": "https://github.com/gicrisf/zhuia"}, "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]}
+
+*** Gotosi
+#+name: gotosi-project
+#+begin_src python :session cv-venv :results output
+gotosi = {
+    "name": "Gotosi",
+    "description": "Isotope oriented periodic table of elements",
+    "when": "Feb. 2021 - Maggio 2021",
+    "link": {
+        "icon": "Github",
+        "text": "gicrisf/gotosi",
+        "href": "https://github.com/gicrisf/gotosi"
+    },
+    "tags": ["Desktop dev.", "Vala", "C", "GTK", "Chemistry"]
+}
+
+print(json.dumps(gotosi))
+#+end_src
+
+#+RESULTS: gotosi-project
+: {"name": "Gotosi", "description": "Isotope oriented periodic table of elements", "when": "Feb. 2021 - Maggio 2021", "link": {"icon": "Github", "text": "gicrisf/gotosi", "href": "https://github.com/gicrisf/gotosi"}, "tags": ["Desktop dev.", "Vala", "C", "GTK", "Chemistry"]}
+
+*** Unsplash
+#+name: unsplash-project
+#+begin_src python :session cv-venv :results output
+unsplash = {
+    "name": "3D renders",
+    "description": "Bio/Chem molecular renders for fun and blogging",
+    "when": "",
+    "link": {
+        "icon": "Unsplash",
+        "text": "@gicrisf",
+        "href": "https://unsplash.com/@gicrisf"
+    },
+    "tags": ["Grafica", "Chimica", "GIMP", "VMD"]
+}
+
+print(json.dumps(unsplash))
+#+end_src
+
+#+RESULTS: unsplash-project
+: {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}
+
+** Seminari
+#+name: projects-dict
+#+begin_src python :session cv-venv :results output :noweb no-export eval
+seminari = []
+seminari.append(festival_scienza_medica)
+seminari.append(sitox)
+seminari.append(chemistry_world_driving)
+seminari.append(chemistry_world_accelerating)
+
+print(json.dumps(projects))
+#+end_src
+
+*** Festival della scienza medica
+#+name: festival-scienza-medica-event
+#+begin_src python :session cv-venv :results output
+festival_scienza_medica = {
+    "name": "Festival della Scienza Medica",
+    "where": "Palazzo Re Enzo - piazza Nettuno 1 - Bologna",
+    "when": "Anni: 2016 - 2017 - 2018 - 2019"
+}
+
+print(json.dumps(festival_scienza_medica))
+#+end_src
+
+#+RESULTS: festival-scienza-medica-event
+: {"name": "Festival della Scienza Medica", "where": "Palazzo Re Enzo - piazza Nettuno 1 - Bologna", "when": "Anni: 2016 - 2017 - 2018 - 2019"}
+
+*** SITOX
+#+name: sitox-event
+#+begin_src python :session cv-venv :results output
+sitox = {
+    "name": "18° Congresso Nazionale Sitox",
+    "where": "Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna",
+    "when": "10 Apr. 2018 - 13 Apr. 2018",
+}
+
+print(json.dumps(sitox))
+#+end_src
+
+#+RESULTS: sitox-event
+: {"name": "18\u00b0 Congresso Nazionale Sitox", "where": "Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna", "when": "10 Apr. 2018 - 13 Apr. 2018"}
+
+*** Chemistry World
+#+name: chemistry-world-event
+#+begin_src python :session cv-venv :results output
+chemistry_world_driving = {
+    "name": "Driving the development of bio-based polymers with molecular simulation",
+    "where": "Chemistry World Webinar",
+    "when": "13 Apr. 2022",
+}
+
+print(json.dumps(chemistry_world_driving))
+
+chemistry_world_accelerating = {
+    "name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy",
+    "where": "Chemistry World Webinar",
+    "when": "24 Maggio 2022",
+}
+
+print(json.dumps(chemistry_world_accelerating))
+#+end_src
+
+#+RESULTS: chemistry-world-event
+: {"name": "Driving the development of bio-based polymers with molecular simulation", "where": "Chemistry World Webinar", "when": "13 Apr. 2022"}
+: {"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}
+
+** Competenze
+#+name: competenze-dict
+#+begin_src python :session cv-venv :results output :noweb no-export eval
+competenze = ["Analisi farmaceutica", "Grafica", "Data viz.", "Rust", "Vala", "Python", "Javascript/Typescript", "Lisp", "GTK", "HTML/CSS", "LaTeX", "Git", "Jinja2/Liquid/Twig"]
+
+print(json.dumps(competenze))
+#+end_src
+
+#+RESULTS: competenze-dict
+: ["Analisi farmaceutica", "Grafica", "Data viz.", "Rust", "Vala", "Python", "Javascript/Typescript", "Lisp", "GTK", "HTML/CSS", "LaTeX", "Git", "Jinja2/Liquid/Twig"]
+
+** Esperienze
+*** Farmacia ospedaliera
+#+name: farmacia-ospedaliera-exp
+#+begin_src python :session cv-venv :results output
+farmacia_ospedaliera = {
+    "name": "Tirocinio in Farmacia Ospedaliera",
+    "where": "Ospedale Gravina di Caltagirone",
+    "when": "Ottobre 2020 - Luglio 2021",
+}
+
+print(json.dumps(farmacia_ospedaliera))
+#+end_src
+
+#+RESULTS: farmacia-ospedaliera-exp
+: {"name": "Tirocinio in Farmacia Ospedaliera", "where": "Ospedale Gravina di Caltagirone", "when": "Ottobre 2020 - Luglio 2021"}
+
+*** Tesi sperimentale
+#+name: tesi-sperimentale-exp
+#+begin_src python :session cv-venv :results output
+tesi_sperimentale = {
+    "name": "Tirocinio per tesi sperimentale",
+    "where": "Dipartimento di \"Chimica Giacomo Ciamician\" - Unibo",
+    "when": "Ottobre 2019 - Maggio 2020",
+}
+
+print(json.dumps(tesi_sperimentale))
+#+end_src
+
+#+RESULTS: tesi-sperimentale-exp
+: {"name": "Tirocinio per tesi sperimentale", "where": "Dipartimento di \"Chimica Giacomo Ciamician\" - Unibo", "when": "Ottobre 2019 - Maggio 2020"}
+
+** Istruzione
+*** Diploma Scientifico
+#+name: diploma-scientifico-istruzione
+#+begin_src python :session cv-venv :results output
+diploma_scientifico = {
+    "name": "Diploma Liceo Scientifico",
+    "where": "Liceo Scientifico E. Majorana - Caltagirone",
+    "when": "Sett. 2009 - Giugno 2014",
+}
+
+print(json.dumps(diploma_scientifico))
+#+end_src
+
+*** CTF
+#+name: ctf-istruzione
+#+begin_src python :session cv-venv :results output
+ctf = {
+    "name": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche",
+    "where": "Dipartimento di Farmacia e Biotecnologie FABIT - Università di Bologna",
+    "when": "Sett. 2014 - In corso",
+}
+
+print(json.dumps(ctf))
+#+end_src
+
+#+RESULTS: ctf-istruzione
+: {"name": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche", "where": "Dipartimento di Farmacia e Biotecnologie FABIT - Universit\u00e0 di Bologna", "when": "Sett. 2014 - In corso"}
+
+*** Summer School in Pharma Analysis
+#+name: pharma-analysis-istruzione
+#+begin_src python :session cv-venv :results output
+pharma_analysis_summer_school = {
+    "name": "Summer School in Pharmaceutical Analysis",
+    "where": "Campus di Rimini - Palazzo Ruffi-Briolini",
+    "when": "18 Sett. 2017 - 20 Sett. 2017",
+    "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"
+}
+
+print(json.dumps(pharma_analysis_summer_school))
+#+end_src
+
+#+RESULTS: pharma-analysis-istruzione
+: {"name": "Summer School in Pharmaceutical Analysis", "where": "Campus di Rimini - Palazzo Ruffi-Briolini", "when": "18 Sett. 2017 - 20 Sett. 2017", "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"}
+
+** Lingue
+#+name: lingue
+#+begin_src python :session cv-venv :results output
+lingue = [("italiano", 5), ("Inglese", 4), ("Francese", 1)]
+
+print(json.dumps(lingue))
+#+end_src
+
+#+RESULTS: lingue
+: [["italiano", 5], ["Inglese", 4], ["Francese", 1]]
 
 * LaTeX
 L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
