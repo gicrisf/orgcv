@@ -536,7 +536,6 @@ print(json.dumps(skills))
 #+begin_src python :session cv-venv :results output
 web = {
     "name": "Web Development",
-    "level": "High",
     "keywords": ["HTML5",
                  "CSS",
                  "JS/Typescript",
@@ -552,17 +551,15 @@ web = {
 print(json.dumps(web))
 #+end_src
 
-#+RESULTS: web-skills-json
-: {"name": "Web Development", "level": "High", "keywords": ["HTML5", "CSS", "JS/Typescript", "Liquid", "Jinja2", "Tera", "Twig", "Zola", "Pelican", "Jamstack"]}
-
-*** Pharma
+*** CTF
 #+name: pharma-skills-json
 #+begin_src python :session cv-venv :results output
 pharma = {
     "name": "Pharma",
-    "level": "High",
     "keywords": ["Pharmaceutical Analysis",
-                 "Spectroscopy",
+                 "Organic Chemistry",
+                 "EPR/NMR Spectroscopy",
+                 "Stereochemistry",
                  "Data viz."]
 }
 
@@ -570,14 +567,13 @@ print(json.dumps(pharma))
 #+end_src
 
 #+RESULTS: pharma-skills-json
-: {"name": "Pharma", "level": "High", "keywords": ["Pharmaceutical Analysis", "Spectroscopy", "Data viz."]}
+: {"name": "Pharma", "keywords": ["Pharmaceutical Analysis", "Organic Chemistry", "EPR/NMR Spectroscopy", "Stereochemistry", "Data viz."]}
 
 *** Programming
 #+name: programming-skills-json
 #+begin_src python :session cv-venv :results output
 programming = {
     "name": "Programming",
-    "level": "High",
     "keywords": ["Rust",
                  "Python",
                  "Lisp",
@@ -591,7 +587,7 @@ print(json.dumps(programming))
 #+end_src
 
 #+RESULTS: programming-skills-json
-: {"name": "Programming", "level": "High", "keywords": ["Rust", "Python", "Lisp", "Vala", "C", "Git", "Php"]}
+: {"name": "Programming", "keywords": ["Rust", "Python", "Lisp", "Vala", "C", "Git", "Php"]}
 
 ** Esperienze
 *** Farmacia ospedaliera
@@ -624,7 +620,7 @@ print(json.dumps(tesi_sperimentale))
 #+RESULTS: tesi-sperimentale-exp
 : {"name": "Tirocinio per tesi sperimentale", "where": "Dipartimento di \"Chimica Giacomo Ciamician\" - Unibo", "when": "Ottobre 2019 - Maggio 2020"}
 
-** Istruzione
+** Education
 
 #+name: edu-json
 #+begin_src python :session cv-venv :results output :noweb no-export eval :var diploma=diploma-scientifico-edu() :var ctf=ctf-edu() :var adme=adme-edu()
@@ -688,16 +684,25 @@ print(json.dumps(pharma_analysis_summer_school))
 #+RESULTS: adme-edu
 : {"name": "Summer School in Pharmaceutical Analysis", "where": "Campus di Rimini - Palazzo Ruffi-Briolini", "when": "18 Sett. 2017 - 20 Sett. 2017", "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"}
 
-** Lingue
-#+name: lingue
-#+begin_src python :session cv-venv :results output
-lingue = [("italiano", 5), ("Inglese", 4), ("Francese", 1)]
+*** TODO 24 CFU
+*** TODO ONSCI
+Officina di narrazione della Scienza.
+7-14 settembre a Bologna.
+Dipartimento di Fisica e Astronomia Unibo.
+Tempi e luoghi per pensare con la scienza: nuovi linguaggi per l'educazione STEM.
 
-print(json.dumps(lingue))
+** Langs
+#+name: langs-json
+#+begin_src python :session cv-venv :results output
+langs = [{"name": "Italiano", "level": "5" },
+         {"name": "Inglese", "level": "4"},
+         {"name": "Francese", "level": "1"}]
+
+print(json.dumps(langs))
 #+end_src
 
-#+RESULTS: lingue
-: [["italiano", 5], ["Inglese", 4], ["Francese", 1]]
+#+RESULTS: langs-json
+: [{"name": "italiano", "level": 5}, {"name": "Inglese", "level": 4}, {"name": "Francese", "level": 1}]
 
 * LaTeX
 L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
@@ -907,7 +912,7 @@ Per il momento elimino perché:
 
 \cvsection{Lingue}
 
-<<lingue-latex>>
+<<langs-latex()>>
 
 \end{paracol}
 \end{document}
@@ -1228,17 +1233,38 @@ print(template.render(edu=edu))
 \divider
 #+end_export
 
-**** Lingue
-#+name: lingue-latex
+**** Langs
+#+name: langs-jinja-latex
 #+begin_src latex
-\cvskill{Italiano}{5}
+{% for lang in langs %}
+\cvskill { {{lang.name}} }{ {{lang.level}} }
+{% if not loop.last %}
 \divider
-
-\cvskill{Inglese}{4}
-\divider
-
-\cvskill{Francese}{1}
+{% endif %}
+{% endfor %}
 #+end_src
+
+Renderizziamo:
+
+#+name: langs-latex
+#+begin_src python :session cv-venv :results output latex :var templ=langs-jinja-latex :var ctx=langs-json()
+langs=json.loads(ctx)
+env = jinja2.Environment()
+env.trim_blocks = True
+env.lstrim_blocks = True
+template = env.from_string(templ)
+print(template.render(langs=langs))
+#+end_src
+
+#+RESULTS: langs-latex
+#+begin_export latex
+\cvskill { Italiano }{ 5 }
+\divider
+\cvskill { Inglese }{ 4 }
+\divider
+\cvskill { Francese }{ 1 }
+#+end_export
+
 
 * TODO Markdown
 Qui potrei usare ox-hugo
