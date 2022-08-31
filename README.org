@@ -1,7 +1,9 @@
 #+title: Org mode CV
 #+author: Giovanni Crisalfi
 
-My Curriculum Vitae, written in Org-mode, LaTeX and Jinja2.
+My /Curriculum Vitae/, written in Org-mode and powered by LaTeX + Python/Jinja2.
+
+[[./cv.pdf][Look at my rendered PDF!]]
 
 ** Features
 - [X] Documented through the main file (=cv.org= is a literate program);
@@ -15,7 +17,7 @@ My Curriculum Vitae, written in Org-mode, LaTeX and Jinja2.
 - [X] Clickable links with 'hyperref' LaTeX package;
 - [X] Support for XeLaTeX and LuaLaTeX;
 
-** TODO
+** TODOs
 - [ ] Python decorators to reduce boilerplate;
 - [ ] Multilanguage support;
 - [ ] Additional pages;
