@@ -1,6 +1,24 @@
 #+title: Literate CV
 #+author: Giovanni Crisalfi
+#+date: [2022-08-31 mer]
 #+startup: overview
+
+#+OPTIONS: tex:t
+# #+OPTIONS: drawers:t
+# #+OPTIONS: latex:t
+# #+OPTIONS: prop:t
+
+#+hugo_base_dir: ~/zwitterio-it/
+#+hugo_section: literate-cv
+#+hugo_auto_set_lastmod: t
+#+export_file_name: index
+
+#+MACRO: more @@html:<!-- more -->@@
+
+Questo file raccoglie tutto il codice necessario a generare il mio CV nelle sue varie versioni.
+È anche un esempio di literate programming in org-mode.
+
+{{{more}}}
 
 * Introduzione
 Innanzitutto devo rappresentare in qualche modo i dati da riportare nei codici da intessere nelle parti successive. Ho molte opzioni. In JSON non se ne parla proprio. Sarebbe già più accettabile scrivere in TOML, ma in verità le opzioni che mi convincono di più sono due:
@@ -493,16 +511,87 @@ print(json.dumps(chemistry_world_accelerating))
 #+RESULTS: chemistry-world-accelerating-event
 : {"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}
 
-** Competenze
-#+name: competenze-dict
-#+begin_src python :session cv-venv :results output :noweb no-export eval
-competenze = ["Analisi farmaceutica", "Grafica", "Data viz.", "Rust", "Vala", "Python", "Javascript/Typescript", "Lisp", "GTK", "HTML/CSS", "LaTeX", "Git", "Jinja2/Liquid/Twig"]
+** Skills
+*** General
+#+name: general-skills-json
+#+begin_src python :session cv-venv :results output
+skills = {
+    "name": "Skills",
+    "keywords": ["Pharmaceutical chemistry",
+                 "Spectroscopy",
+                 "Programming",
+                 "Web dev.",
+                 "Desktop dev.",
+                 "Data viz."]
+}
 
-print(json.dumps(competenze))
+print(json.dumps(skills))
 #+end_src
 
-#+RESULTS: competenze-dict
-: ["Analisi farmaceutica", "Grafica", "Data viz.", "Rust", "Vala", "Python", "Javascript/Typescript", "Lisp", "GTK", "HTML/CSS", "LaTeX", "Git", "Jinja2/Liquid/Twig"]
+#+RESULTS: general-skills-json
+: {"name": "Skills", "keywords": ["Pharmaceutical chemistry", "Spectroscopy", "Programming", "Web dev.", "Desktop dev.", "Data viz."]}
+
+*** Web
+#+name: web-skills-json
+#+begin_src python :session cv-venv :results output
+web = {
+    "name": "Web Development",
+    "level": "High",
+    "keywords": ["HTML5",
+                 "CSS",
+                 "JS/Typescript",
+                 "Liquid",
+                 "Jinja2",
+                 "Tera",
+                 "Twig",
+                 "Zola",
+                 "Pelican",
+                 "Jamstack"]
+}
+
+print(json.dumps(web))
+#+end_src
+
+#+RESULTS: web-skills-json
+: {"name": "Web Development", "level": "High", "keywords": ["HTML5", "CSS", "JS/Typescript", "Liquid", "Jinja2", "Tera", "Twig", "Zola", "Pelican", "Jamstack"]}
+
+*** Pharma
+#+name: pharma-skills-json
+#+begin_src python :session cv-venv :results output
+pharma = {
+    "name": "Pharma",
+    "level": "High",
+    "keywords": ["Pharmaceutical Analysis",
+                 "Spectroscopy",
+                 "Data viz."]
+}
+
+print(json.dumps(pharma))
+#+end_src
+
+#+RESULTS: pharma-skills-json
+: {"name": "Pharma", "level": "High", "keywords": ["Pharmaceutical Analysis", "Spectroscopy", "Data viz."]}
+
+*** Programming
+#+name: programming-skills-json
+#+begin_src python :session cv-venv :results output
+programming = {
+    "name": "Programming",
+    "level": "High",
+    "keywords": ["Rust",
+                 "Python",
+                 "Lisp",
+                 "Vala",
+                 "C",
+                 "Git",
+                 "Php"]
+}
+
+print(json.dumps(programming))
+#+end_src
+
+#+RESULTS: programming-skills-json
+: {"name": "Programming", "level": "High", "keywords": ["Rust", "Python", "Lisp", "Vala", "C", "Git", "Php"]}
 
 ** Esperienze
 *** Farmacia ospedaliera
@@ -776,7 +865,7 @@ Per il momento elimino perché:
 ** Document
 *** Overview
 #+name: document-latex
-#+begin_src latex :noweb no-export :results output latex :export results
+#+begin_src latex :noweb no-export
 \begin{document}
 
 <<personalinfo-latex()>>
@@ -804,7 +893,7 @@ Per il momento elimino perché:
 \cvsection{Competenze}
 \label{sec:orga689fa6}
 
-<<competenze-latex>>
+<<skills-latex()>>
 
 \cvsection{Esperienze}
 \label{sec:org5a7829c}
@@ -823,165 +912,6 @@ Per il momento elimino perché:
 \end{paracol}
 \end{document}
 #+end_src
-
-#+RESULTS: document-latex
-#+begin_export latex
-\begin{document}
-
-\name{ Giovanni Crisalfi }
-\photoR{2.8cm}{ propic-ciliegio.jpg }
-\tagline{ Studente }
-
-\personalinfo{
-  \homepage{ www.zwitterio.it }
-  \email{ giovanni.crisalfi@protonmail.com }
-  \phone{ +39 3331604917 }
-  \location{ Caltagirone, CT }
-  \github{ gicrisf }
-  \twitter{ gicrisf }
-  % \linkedin{  }
-  \dob{ 27 Dicembre 1995 }
-  \driving{ Patente B }
-}
-
-\makecvheader
-
-\begin{paracol}{2}
-
-\begin{quote}
-Studente di CTF appassionato di spettroscopia e simulazioni computazionali.
-Sostenitore dell'Open Source, vivo su Linux e scrivo sia codice che prosa su Emacs.
-Mi interesso di epistemologia, cinema, fumetti e altre lettere.
-\end{quote}
-
-\vspace{.1cm}
-
-\cvsection{Progetti}
-\label{sec:org9314928}
-
-\cvevent{ Esrafel }{ Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods }{ Marzo 2020 - Marzo 2022  }
-
-\begin{itemize}
-\item \href{ https://github.com/gicrisf/esrafel }{\faGithub gicrisf/esrafel}
-\end{itemize}
-\vspace{.2cm}
-
-\cvtag{ Desktop dev. }
-\cvtag{ Rust }
-\cvtag{ GTK }
-\cvtag{ Spettroscopia }
-\par\divider
-\cvevent{ Zhuia }{ An elegant but still playful theme for Zola }{ Feb. 2022 - Marzo 2022  }
-
-\begin{itemize}
-\item \href{ https://github.com/gicrisf/zhuia }{\faGithub gicrisf/zhuia}
-\end{itemize}
-\vspace{.2cm}
-
-\cvtag{ Web dev. }
-\cvtag{ Rust }
-\cvtag{ Zola }
-\cvtag{ Tera }
-\cvtag{ Liquid }
-\cvtag{ Jinja2 }
-\par\divider
-\cvevent{ Gotosi }{ Isotope oriented periodic table of elements }{ Feb. 2021 - Maggio 2021  }
-
-\begin{itemize}
-\item \href{ https://github.com/gicrisf/gotosi }{\faGithub gicrisf/gotosi}
-\end{itemize}
-\vspace{.2cm}
-
-\cvtag{ Desktop dev. }
-\cvtag{ Vala }
-\cvtag{ C }
-\cvtag{ GTK }
-\cvtag{ Chemistry }
-\par\divider
-\cvevent{ 3D renders }{ Bio/Chem molecular renders for fun and blogging }{   }
-
-\begin{itemize}
-\item \href{ https://unsplash.com/@gicrisf }{\faUnsplash @gicrisf}
-\end{itemize}
-\vspace{.2cm}
-
-\cvtag{ Grafica }
-\cvtag{ Chimica }
-\cvtag{ GIMP }
-\cvtag{ VMD }
-\par\divider
-
-\cvsection{Seminari}
-\label{sec:org1d737ad}
-
-\cvevent{ Festival della Scienza Medica Palazzo Re Enzo - piazza Nettuno 1 - Bologna Anni: 2016 - 2017 - 2018 - 2019 }
-
-\par\divider
-\cvevent{ 18° Congresso Nazionale Sitox Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna 10 Apr. 2018 - 13 Apr. 2018 }
-
-\par\divider
-\cvevent{ Driving the development of bio-based polymers with molecular simulation Chemistry World Webinar 13 Apr. 2022 }
-
-\par\divider
-\cvevent{ Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy Chemistry World Webinar 24 Maggio 2022 }
-
-\par\divider
-
-\switchcolumn
-
-\cvsection{Competenze}
-\label{sec:orga689fa6}
-
-\cvtag{Analisi farmaceutica}
-\cvtag{Grafica}
-\cvtag{Data viz}
-
-\vspace{-.1cm}
-
-\cvtag{Rust}
-\cvtag{Vala}
-\cvtag{Python}
-\cvtag{JavaScript}
-
-\vspace{.1cm}
-
-\cvtag{Lisp}
-\cvtag{GTK}
-\cvtag{HTML/CSS}
-\cvtag{Git}
-
-\cvsection{Esperienze}
-\label{sec:org5a7829c}
-
-\cvevent{Tirocinio in Farmacia Ospedaliera}{ Ospedale Gravina di Caltagirone}{ Ottobre 2020 - Luglio 2021}{}
-
-\par\divider
-
-\cvevent{Tirocinio per tesi sperimentale}{ Dipartimento di Chimica "Giacomo Ciamician" - Unibo}{ Ottobre 2019 - Maggio 2020}{}
-
-\cvsection{Istruzione}
-\label{sec:org75d0adb}
-
-\cvevent{Summer School in Pharmaceutical Analysis}{ Campus di Rimini - Palazzo Ruffi-Briolini}{ 18 Sett. 2017 – 20 Sett. 2017}{}
-\begin{itemize}
-\item Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies
-\end{itemize}
-
-\divider
-
-\cvevent{Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche}{ Dipartimento di Farmacia e Biotecnologie FABIT | Università di Bologna}{ Sett. 2014 -- In corso}{}
-
-\divider
-
-\cvevent{Diploma}{ Liceo Scientifico E. Majorana | Caltagirone}{ Sett. 2009 -- Giugno 2014}{}
-
-\cvsection{Lingue}
-
-
-
-\end{paracol}
-\end{document}
-#+end_export
 
 *** Header
 **** Personal Info
@@ -1195,27 +1125,53 @@ print(template.render(seminari=seminari))
 #+end_export
 
 *** Column 2
-**** Competenze
-#+name: competenze-latex
+**** Skills
+Stampa le keywords ed aggiungi un leggero spazio verticale ogni tre tag.
+
+#+name: skills-jinja-latex
 #+begin_src latex
-\cvtag{Analisi farmaceutica}
-\cvtag{Grafica}
-\cvtag{Data viz}
+{% for skill in skills.keywords %}
+\cvtag { {{skill}} }
+{% if skill | length >= 14 %}
 
-\vspace{-.1cm}
+\vspace{+.1cm}
+{% endif %}
+{% if not loop.last %}
+{% if loop.index % 3 == 0 %}
 
-\cvtag{Rust}
-\cvtag{Vala}
-\cvtag{Python}
-\cvtag{JavaScript}
+\vspace{+.1cm}
 
-\vspace{.1cm}
-
-\cvtag{Lisp}
-\cvtag{GTK}
-\cvtag{HTML/CSS}
-\cvtag{Git}
+{% endif %}
+{% endif %}
+{% endfor %}
 #+end_src
+
+Renderizziamo:
+
+#+name: skills-latex
+#+begin_src python :session cv-venv :results output latex :var templ=skills-jinja-latex :var ctx=general-skills-json()
+skills=json.loads(ctx)
+env = jinja2.Environment()
+env.trim_blocks = True
+env.lstrim_blocks = True
+template = env.from_string(templ)
+print(template.render(skills=skills))
+#+end_src
+
+#+RESULTS: skills-latex
+#+begin_export latex
+\cvtag { Pharmaceutical chemistry }
+
+\vspace{+.1cm}
+\cvtag { Spectroscopy }
+\cvtag { Programming }
+
+\vspace{+.1cm}
+
+\cvtag { Web dev. }
+\cvtag { Desktop dev. }
+\cvtag { Data viz. }
+#+end_export
 
 **** Esperienze
 #+name: esperienze-latex
