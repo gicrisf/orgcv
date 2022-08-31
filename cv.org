@@ -1,5 +1,6 @@
 #+title: Literate CV
 #+author: Giovanni Crisalfi
+#+startup: overview
 
 * Introduzione
 Innanzitutto devo rappresentare in qualche modo i dati da riportare nei codici da intessere nelle parti successive. Ho molte opzioni. In JSON non se ne parla proprio. Sarebbe già più accettabile scrivere in TOML, ma in verità le opzioni che mi convincono di più sono due:
@@ -158,6 +159,8 @@ env = Environment(
 )
 #+end_src
 
+#+RESULTS:
+
 #+begin_quote
 To load a template from this environment, call the get_template() method, which returns the loaded Template.
 #+end_quote
@@ -310,16 +313,16 @@ Medicinal chemistry student at Unibo • Into spectroscopy and radicals • Linu
 #+end_src
 
 ** Projects
-#+name: projects-dict
-#+begin_src python :session cv-venv :results output :noweb no-export eval
-projects = []
-projects.append(esrafel)
-projects.append(zhuia)
-projects.append(gotosi)
-projects.append(unsplash)
+#+name: projects-json
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var esrafel=esrafel-project() :var zhuia=zhuia-project() :var gotosi=gotosi-project() :var unsplash=unsplash-project
+projects = [esrafel, zhuia, gotosi, unsplash]
+projects = [json.loads(x) for x in projects]
 
 print(json.dumps(projects))
 #+end_src
+
+#+RESULTS: projects-json
+: [{"name": "Esrafel", "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods", "when": "Marzo 2020 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/esrafel", "href": "https://github.com/gicrisf/esrafel"}, "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]}, {"name": "Zhuia", "description": "An elegant but still playful theme for Zola", "when": "Feb. 2022 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/zhuia", "href": "https://github.com/gicrisf/zhuia"}, "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]}, {"name": "Gotosi", "description": "Isotope oriented periodic table of elements", "when": "Feb. 2021 - Maggio 2021", "link": {"icon": "Github", "text": "gicrisf/gotosi", "href": "https://github.com/gicrisf/gotosi"}, "tags": ["Desktop dev.", "Vala", "C", "GTK", "Chemistry"]}, {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}]
 
 *** Esrafel
 #+name: esrafel-project
@@ -409,16 +412,20 @@ print(json.dumps(unsplash))
 : {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}
 
 ** Seminari
-#+name: projects-dict
-#+begin_src python :session cv-venv :results output :noweb no-export eval
+#+name: seminari-json
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var festival_scienza_medica=festival-scienza-medica-event() :var sitox=sitox-event :var chemistry_world_driving=chemistry-world-driving-event() :var chemistry_world_accelerating=chemistry-world-accelerating-event()
 seminari = []
 seminari.append(festival_scienza_medica)
 seminari.append(sitox)
 seminari.append(chemistry_world_driving)
 seminari.append(chemistry_world_accelerating)
 
-print(json.dumps(projects))
+seminari = [json.loads(x) for x in seminari]
+print(json.dumps(seminari))
 #+end_src
+
+#+RESULTS: seminari-json
+: [{"name": "Festival della Scienza Medica", "where": "Palazzo Re Enzo - piazza Nettuno 1 - Bologna", "when": "Anni: 2016 - 2017 - 2018 - 2019"}, {"name": "18\u00b0 Congresso Nazionale Sitox", "where": "Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna", "when": "10 Apr. 2018 - 13 Apr. 2018"}, {"name": "Driving the development of bio-based polymers with molecular simulation", "where": "Chemistry World Webinar", "when": "13 Apr. 2022"}, {"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}]
 
 *** Festival della scienza medica
 #+name: festival-scienza-medica-event
@@ -451,7 +458,7 @@ print(json.dumps(sitox))
 : {"name": "18\u00b0 Congresso Nazionale Sitox", "where": "Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna", "when": "10 Apr. 2018 - 13 Apr. 2018"}
 
 *** Chemistry World
-#+name: chemistry-world-event
+#+name: chemistry-world-driving-event
 #+begin_src python :session cv-venv :results output
 chemistry_world_driving = {
     "name": "Driving the development of bio-based polymers with molecular simulation",
@@ -460,7 +467,13 @@ chemistry_world_driving = {
 }
 
 print(json.dumps(chemistry_world_driving))
+#+end_src
 
+#+RESULTS: chemistry-world-driving-event
+: {"name": "Driving the development of bio-based polymers with molecular simulation", "where": "Chemistry World Webinar", "when": "13 Apr. 2022"}
+
+#+name: chemistry-world-accelerating-event
+#+begin_src python :session cv-venv :results output
 chemistry_world_accelerating = {
     "name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy",
     "where": "Chemistry World Webinar",
@@ -470,8 +483,7 @@ chemistry_world_accelerating = {
 print(json.dumps(chemistry_world_accelerating))
 #+end_src
 
-#+RESULTS: chemistry-world-event
-: {"name": "Driving the development of bio-based polymers with molecular simulation", "where": "Chemistry World Webinar", "when": "13 Apr. 2022"}
+#+RESULTS: chemistry-world-accelerating-event
 : {"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}
 
 ** Competenze
@@ -574,13 +586,48 @@ print(json.dumps(lingue))
 * LaTeX
 L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
 
-Oppure (oppure) potrei aggiungere questo blocco direttamente alla configurazione di Emacs e togliermi il pensiero, tanto non li voglio mai comunque.
-
 #+begin_src emacs-lisp
 (setq org-latex-logfiles-extensions (quote ("lof" "lot" "tex~" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl" "xmpi" "run.xml" "bcf")))
 #+end_src
 
+Per fare prima, aggiungo direttamente questa variabile alla configurazione generale di Emacs.
+
+Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un documento (=document=):
+
+#+begin_src latex :noweb no-export :tangle cv.tex
+<<head-latex>>
+
+<<document-latex>>
+#+end_src
+
 ** Head
+*** Overview
+#+name: head-latex
+#+begin_src latex :noweb no-export
+% Created 2022-07-27 mer 04:05
+% Intended LaTeX compiler: pdflatex
+
+<<class-latex>>
+
+<<layout-latex>>
+
+<<fonts-latex>>
+
+<<colors-latex>>
+
+<<bullets-latex>>
+
+<<font-packages-latex>>
+
+<<columns-latex>>
+
+<<footnotes-latex>>
+
+<<bib-latex>>
+
+<<exporter-latex>>
+#+end_src
+
 *** Class
 #+name: class-latex
 #+begin_src latex
@@ -675,82 +722,97 @@ Oppure (oppure) potrei aggiungere questo blocco direttamente alla configurazione
 \title{}
 #+end_src
 
-*** Weave
-#+begin_src latex :noweb no-export
-% Created 2022-07-27 mer 04:05
-% Intended LaTeX compiler: pdflatex
+** Document
+*** Overview
+#+name: document-latex
+#+begin_src latex :noweb no-export :results output latex :export results
+\begin{document}
 
-<<class-latex>>
+<<main-header-latex>>
 
-<<layout-latex>>
+<<personalinfo-latex()>>
 
-<<fonts-latex>>
+\makecvheader
 
-<<colors-latex>>
+\begin{paracol}{2}
 
-<<bullets-latex>>
+<<personal-statement-latex()>>
 
-<<font-packages-latex>>
+\vspace{.1cm}
 
-<<columns-latex>>
+\cvsection{Progetti}
+\label{sec:org9314928}
 
-<<footnotes-latex>>
+<<projects-latex()>>
 
-<<bib-latex>>
+\cvsection{Seminari}
+\label{sec:org1d737ad}
 
-<<exporter-latex>>
+<<seminari-latex()>>
+
+\switchcolumn
+
+\cvsection{Competenze}
+\label{sec:orga689fa6}
+
+<<competenze-latex>>
+
+\cvsection{Esperienze}
+\label{sec:org5a7829c}
+
+<<esperienze-latex>>
+
+\cvsection{Istruzione}
+\label{sec:org75d0adb}
+
+<<istruzione-latex>>
+
+\cvsection{Lingue}
+
+<<lingue-latex>>
+
+\end{paracol}
+\end{document}
 #+end_src
 
-** Document
 *** Header
 **** Personal Info
-#+name: personalinfo-latex
+Vogliamo ottenere un risultato del genere:
+
 #+begin_src latex
 \name{Giovanni Crisalfi}
 \photoR{2.8cm}{propic-ciliegio.jpg}
 \tagline{Studente}
 
 \personalinfo{
-  \homepage{www.zwitterio.it}
-  \email{giovanni.crisalfi@protonmail.com}
-  \phone{+39 3331604917}
-  \location{Caltagirone, CT}
-  \github{gicrisf}
-  \twitter{gicrisf}
-  % \linkedin{aidan-scannell-82522789/}
-  \dob{27 Dicembre 1995}
-  \driving{Patente B}
+  % ...
 }
 #+end_src
 
+Scriviamo un template:
 #+name: personalinfo-jinja-latex
-#+begin_src latex
-\name{ {{context.name}} }
-\photoR{2.8cm}{propic-ciliegio.jpg}
-\tagline{Studente}
+#+begin_src latex :results output
+\name{ {{ctx.name}} }
+\photoR{2.8cm}{ {{ctx.photo}} }
+\tagline{ {{ctx.tagline}} }
 
 \personalinfo{
-  \homepage{www.zwitterio.it}
-  \email{giovanni.crisalfi@protonmail.com}
-  \phone{+39 3331604917}
-  \location{Caltagirone, CT}
-  \github{gicrisf}
-  \twitter{gicrisf}
-  % \linkedin{aidan-scannell-82522789/}
-  \dob{27 Dicembre 1995}
-  \driving{Patente B}
+  \homepage{ {{ctx.homepage}} }
+  \email{ {{ctx.email}} }
+  \phone{ {{ctx.phone}} }
+  \location{ {{ctx.location}} }
+  \github{ {{ctx.github}} }
+  \twitter{ {{ctx.twitter}} }
+  % \linkedin{  }
+  \dob{ {{ctx.dob}} }
+  \driving{ {{ctx.driving}} }
 }
 #+end_src
+
+Intanto verifichiamo che Jinja2 stia funzionando come si deve:
 
 #+begin_src python :results output :var context=personalinfo-table
 import jinja2
-
-# Convert to dictionary
-ctx = {}
-for elem in context:
-    ctx[elem[0]] = elem[1]
-
-# print(ctx)
 
 environment = jinja2.Environment()
 template = environment.from_string("Hello, {{ name }}!")
@@ -761,39 +823,175 @@ print(template.render(name="World"))
 #+RESULTS:
 : Hello, World!
 
+Ora renderizziamo il primo template:
+#+name: personalinfo-latex
+#+begin_src python :session cv-venv :results output latex :var templ=personalinfo-jinja-latex :var ctx=personalinfo-json()
+ctx=json.loads(ctx)
+env = jinja2.Environment()
+template = env.from_string(templ)
+print(template.render(ctx=ctx))
+#+end_src
+
+#+RESULTS: personalinfo-latex
+#+begin_export latex
+\name{ Giovanni Crisalfi }
+\photoR{2.8cm}{ propic-ciliegio.jpg }
+\tagline{ Studente }
+
+\personalinfo{
+  \homepage{ www.zwitterio.it }
+  \email{ giovanni.crisalfi@protonmail.com }
+  \phone{ +39 3331604917 }
+  \location{ Caltagirone, CT }
+  \github{ gicrisf }
+  \twitter{ gicrisf }
+  % \linkedin{  }
+  \dob{ 27 Dicembre 1995 }
+  \driving{ Patente B }
+}
+#+end_export
+
+#+RESULTS:
+#+begin_example
+\name{ Giovanni Crisalfi }
+\photoR{2.8cm}{ propic-ciliegio.jpg }
+\tagline{ Studente }
+
+\personalinfo{
+  \homepage{ www.zwitterio.it }
+  \email{ giovanni.crisalfi@protonmail.com }
+  \phone{ +39 3331604917 }
+  \location{ Caltagirone, CT }
+  \github{ gicrisf }
+  \twitter{ gicrisf }
+  % \linkedin{aidan-scannell-82522789/}
+  \dob{ 27 Dicembre 1995 }
+  \driving{ Patente B }
+}
+#+end_example
+
 *** Column 1
 **** Personal Statement
 #+name: personal-statement-latex
-#+begin_src latex
+#+begin_src latex :noweb no-export
+\begin{quote}
+<<personal-statement-it>>
+\end{quote}
+#+end_src
+
+#+RESULTS: personal-statement-latex
+#+begin_export latex
 \begin{quote}
 Studente di CTF appassionato di spettroscopia e simulazioni computazionali.
 Sostenitore dell'Open Source, vivo su Linux e scrivo sia codice che prosa su Emacs.
 Mi interesso di epistemologia, cinema, fumetti e altre lettere.
 \end{quote}
-#+end_src
-
-**** Publications
-Non voglio esportare, quindi non aggiungo al blocco di tessitura (weaving)
-
-#+name: publications-latex
-#+begin_export latex
-\nocite{*}
-% \printbibliography[heading=pubtype,title={\printinfo{\faBook}{Books}},type=book]
-% \divider
-% \printbibliography[heading=pubtype,title={\printinfo{\faFile*[regular]}{Journal Articles}},type=article]
-% \divider
-\printbibliography[heading=pubtype,title={\printinfo{\faUsers}{Conference Proceedings}},type=inproceedings]
 #+end_export
 
 **** Progetti
-#+name: projects-latex
-#+begin_src
+#+name: projects-jinja-latex
+#+begin_src latex :results output
+{% for project in projects %}
+\cvevent{ {{project.name}} }{ {{project.description}} }{ {{project.when}}  }
+
+\begin{itemize}
+\item \href{ {{project.link.href}} }{\fa{{ project.link.icon }} {{ project.link.text }}}
+\end{itemize}
+\vspace{.2cm}
+
+{% for tag in projects.tags %}
+  \cvtag{ {{tag}} }
+{% endfor %}
+{% endfor %}
 #+end_src
 
-**** Seminari
-#+name: seminari-latex
-#+begin_src
+Renderizziamo tutti i progetti:
+
+#+name: projects-latex
+#+begin_src python :session cv-venv :results output :var templ=projects-jinja-latex :var ctx=projects-json()
+projects=json.loads(ctx)
+env = jinja2.Environment()
+template = env.from_string(templ)
+print(template.render(projects=projects))
 #+end_src
+
+#+RESULTS: projects-latex
+#+begin_example
+
+\cvevent{ Esrafel }{ Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods }{ Marzo 2020 - Marzo 2022  }
+
+\begin{itemize}
+\item \href{ https://github.com/gicrisf/esrafel }{\faGithub gicrisf/esrafel}
+\end{itemize}
+\vspace{.2cm}
+
+
+
+\cvevent{ Zhuia }{ An elegant but still playful theme for Zola }{ Feb. 2022 - Marzo 2022  }
+
+\begin{itemize}
+\item \href{ https://github.com/gicrisf/zhuia }{\faGithub gicrisf/zhuia}
+\end{itemize}
+\vspace{.2cm}
+
+
+
+\cvevent{ Gotosi }{ Isotope oriented periodic table of elements }{ Feb. 2021 - Maggio 2021  }
+
+\begin{itemize}
+\item \href{ https://github.com/gicrisf/gotosi }{\faGithub gicrisf/gotosi}
+\end{itemize}
+\vspace{.2cm}
+
+
+
+\cvevent{ 3D renders }{ Bio/Chem molecular renders for fun and blogging }{   }
+
+\begin{itemize}
+\item \href{ https://unsplash.com/@gicrisf }{\faUnsplash @gicrisf}
+\end{itemize}
+\vspace{.2cm}
+#+end_example
+
+**** Seminari
+#+name: seminari-jinja-latex
+#+begin_src latex
+{% for seminario in seminari %}
+\cvevent{ {{seminario.name}} {{seminario.where}} {{seminario.when}} }
+
+\par\divider
+{% endfor %}
+#+end_src
+
+Renderizziamo tutti i progetti:
+
+#+name: seminari-latex
+#+begin_src python :session cv-venv :results output latex :var templ=seminari-jinja-latex :var ctx=seminari-json()
+seminari=json.loads(ctx)
+env = jinja2.Environment()
+template = env.from_string(templ)
+print(template.render(seminari=seminari))
+#+end_src
+
+#+RESULTS: seminari-latex
+#+begin_export latex
+
+\cvevent{ Festival della Scienza Medica Palazzo Re Enzo - piazza Nettuno 1 - Bologna Anni: 2016 - 2017 - 2018 - 2019 }
+
+\par\divider
+
+\cvevent{ 18° Congresso Nazionale Sitox Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna 10 Apr. 2018 - 13 Apr. 2018 }
+
+\par\divider
+
+\cvevent{ Driving the development of bio-based polymers with molecular simulation Chemistry World Webinar 13 Apr. 2022 }
+
+\par\divider
+
+\cvevent{ Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy Chemistry World Webinar 24 Maggio 2022 }
+
+\par\divider
+#+end_export
 
 *** Column 2
 **** Competenze
@@ -862,57 +1060,6 @@ Non voglio esportare, quindi non aggiungo al blocco di tessitura (weaving)
 % %% \bigskip, \vpsace etc to make ajustments.
 % \medskip
 #+end_export
-
-*** Weave
-#+begin_src latex :noweb no-export
-\begin{document}
-
-<<main-header-latex>>
-
-<<personalinfo-latex>>
-
-\makecvheader
-
-\begin{paracol}{2}
-
-<<personal-statement-latex>>
-
-\vspace{.1cm}
-
-\cvsection{Progetti}
-\label{sec:org9314928}
-
-<<projects-latex>>
-
-\cvsection{Seminari}
-\label{sec:org1d737ad}
-
-<<seminari-latex>>
-
-\switchcolumn
-
-\cvsection{Competenze}
-\label{sec:orga689fa6}
-
-<<competenze-latex>>
-
-\cvsection{Esperienze}
-\label{sec:org5a7829c}
-
-<<esperienze-latex>>
-
-\cvsection{Istruzione}
-\label{sec:org75d0adb}
-
-<<istruzione-latex>>
-
-\cvsection{Lingue}
-
-<<lingue-latex>>
-
-\end{paracol}
-\end{document}
-#+end_src
 
 * Markdown
 Qui potrei usare ox-hugo
