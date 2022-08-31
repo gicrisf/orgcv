@@ -3,11 +3,6 @@
 #+date: [2022-08-31 mer]
 #+startup: overview
 
-#+OPTIONS: tex:t
-# #+OPTIONS: drawers:t
-# #+OPTIONS: latex:t
-# #+OPTIONS: prop:t
-
 #+hugo_base_dir: ~/zwitterio-it/
 #+hugo_section: literate-cv
 #+hugo_auto_set_lastmod: t
@@ -439,11 +434,12 @@ print(json.dumps(unsplash))
 ** Seminari
 #+name: seminari-json
 #+begin_src python :session cv-venv :results output :noweb no-export eval :var festival_scienza_medica=festival-scienza-medica-event() :var sitox=sitox-event :var chemistry_world_driving=chemistry-world-driving-event() :var chemistry_world_accelerating=chemistry-world-accelerating-event()
-seminari = []
-seminari.append(festival_scienza_medica)
-seminari.append(sitox)
-seminari.append(chemistry_world_driving)
-seminari.append(chemistry_world_accelerating)
+seminari = [
+    festival_scienza_medica,
+    sitox,
+    chemistry_world_driving,
+    chemistry_world_accelerating,
+]
 
 seminari = [json.loads(x) for x in seminari]
 print(json.dumps(seminari))
@@ -589,7 +585,7 @@ print(json.dumps(programming))
 #+RESULTS: programming-skills-json
 : {"name": "Programming", "keywords": ["Rust", "Python", "Lisp", "Vala", "C", "Git", "Php"]}
 
-** Esperienze
+** Experiences
 #+name: exps-json
 #+begin_src python :session cv-venv :results output :noweb no-export eval :var tirocinio=farmacia-ospedaliera-exp() :var tesi=tesi-sperimentale-exp()
 exps = [
@@ -737,6 +733,14 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 #+end_src
 
 ** Dipendenze
+Per scrivere il CV in LaTeX utilizzo il template AltaCV.
+Citando il README, questi sono i requisiti per la compilazione:
+
+#+begin_quote
+- pdflatex + biber + pdflatex
+- AltaCV uses fontawesome5.
+#+end_quote
+
 Prima di tentare la conversione in pdf (es. con =pdflatex=) ricorda che sono necessarie le seguenti dipendenze.
 
 *** Fonts
@@ -746,11 +750,18 @@ In effetti, su AUR si trova =texlive-fonts-fontawesome=...
 yay texlive-fonts-fontawesome
 #+end_src
 
-... ma visto che ci serve anche Roboto, facciamo prima ad installare il pacchetto coi font:
+... ma visto che ci serve anche Roboto (o un font alternativo a nostra scelta), facciamo prima ad installare il pacchetto coi font:
 
 #+begin_src bash
 sudo pacman -S texlive-fontsextra
 #+end_src
+
+Viceversa, potremmo sfruttare i font di sistema compilando con XeLaTeX o LuaLaTex:
+
+#+begin_quote
+- Can now be compiled with pdflatex, XeLaTeX and LuaLaTeX!
+- Note that to compile with XeLaTeX, you should use a command line as follows, per the pdfx documentation: xelatex -shell-escape -output-driver="xdvipdfmx -z 0" sample.tex
+#+end_quote
 
 *** Bibtex
 #+begin_src bash
@@ -780,10 +791,18 @@ sudo pacman -S texlive-bibtexextra
 
 <<footnotes-latex>>
 
+<<bib-latex>>
+
 <<exporter-latex>>
 #+end_src
 
 *** Class
+=withyper= serve ad AltaCV per rendere cliccabili i link nelle "personal info":
+
+#+begin_quote
+As of v1.3 the =withhyper= document class option will make the "personal info" fields into clickable hyperlinks (where it makes sense). See below for more details.
+#+end_quote
+
 #+name: class-latex
 #+begin_src latex
 \documentclass[10pt,a4paper,ragged2e,withhyper]{altacv}
@@ -797,6 +816,16 @@ sudo pacman -S texlive-bibtexextra
 #+end_src
 
 *** Fonts
+#+begin_quote
+Use =\renewcommand= to change these.
+
+- =\namefont=
+- =\taglinefont=
+- =\personalinfofont=
+- =\cvsectionfont=
+- =\cvsubsectionfont=
+#+end_quote
+
 **** Commands
 #+name: fonts-latex
 #+begin_src latex
@@ -818,6 +847,21 @@ sudo pacman -S texlive-bibtexextra
 #+end_src
 
 *** Colors
+[[https://github.com/liantze/altaCV#configurable-colours][Dal README di AltaCV]]:
+
+#+begin_quote
+Use =\colorlet= or =\definecolor= to change these.
+
+- accent
+- emphasis
+- heading
+- headingrule
+- subheading
+- body
+- name
+- tagline
+#+end_quote
+
 #+name: colors-latex
 #+begin_src latex
 % Change the colours if you want to
@@ -847,6 +891,33 @@ sudo pacman -S texlive-bibtexextra
 #+end_src
 
 *** Columns
+#+begin_quote
+This new layout uses the paracol package for typesetting the left and right columns that can break across pages. It also makes changing the column widths easier:
+#+end_quote
+
+#+begin_src latex
+%% Set the left/right column width ratio to 6:4.
+\columnratio{0.6}
+
+% Start a 2-column paracol. Both the left and right columns will automatically
+% break across pages if things get too long.
+\begin{paracol}{2}
+\cvsection{Experience}
+...
+... END OF LEFT COLUMN CONTENTS ...
+
+% Now switch to the right column.
+\switchcolumn
+\cvsection{Education}
+...
+...END OF RIGHT COLUMN CONTENTS ...
+\end{paracol}
+#+end_src
+
+#+begin_quote
+You can also use =\swithcolumn*= for "synchronising" the columns, as well as other commands from the =paracol= package. See the [[http://texdoc.net/pkg/paracol][paracol package documentation]] for further details.
+#+end_quote
+
 #+name: columns-latex
 #+begin_src latex
 \usepackage{paracol}
@@ -859,20 +930,22 @@ sudo pacman -S texlive-bibtexextra
 \usepackage[bottom]{footmisc}
 #+end_src
 
-*** TODO Bibliography
+*** Bibliography
 #+name: bib-latex
 #+begin_src latex
 \DeclareNameAlias{sortname}{given-family}
 
-\addbibresource{aidan.bib}
+\addbibresource{sample.bib}
 
-\usepackage[style=trad-abbrv,sorting=none,sortcites=true,doi=false,url=false,giveninits=true,hyperref]{biblatex}
+% \usepackage[style=trad-abbrv,sorting=none,sortcites=true,doi=false,url=false,giveninits=true,hyperref]{biblatex}
 #+end_src
 
-Per il momento elimino perché:
+Commento via =\usepackage= perché:
 #+begin_quote
 ! LaTeX Error: Option clash for package biblatex.
 #+end_quote
+
+È probabile che AltaCV già carichi =biblatex= e chee questo comando sia ridondante.
 
 *** Exporter
 #+name: exporter-latex
@@ -899,29 +972,24 @@ Per il momento elimino perché:
 \vspace{.1cm}
 
 \cvsection{Progetti}
-\label{sec:org9314928}
 
 <<projects-latex()>>
 
 \cvsection{Seminari}
-\label{sec:org1d737ad}
 
 <<seminari-latex()>>
 
 \switchcolumn
 
 \cvsection{Competenze}
-\label{sec:orga689fa6}
 
 <<skills-latex()>>
 
 \cvsection{Esperienze}
-\label{sec:org5a7829c}
 
 <<exps-latex()>>
 
 \cvsection{Istruzione}
-\label{sec:org75d0adb}
 
 <<edu-latex()>>
 
@@ -934,7 +1002,6 @@ Per il momento elimino perché:
 #+end_src
 
 *** Header
-**** Personal Info
 Vogliamo ottenere un risultato del genere:
 
 #+begin_src latex
@@ -1305,7 +1372,8 @@ print(template.render(langs=langs))
 #+end_export
 
 * TODO Markdown
-Qui potrei usare ox-hugo
+Qui potrei usare ox-hugo o scrivere direttamente un template con Jinja.
+
 * TODO JSON
 Posso esportare tutti i dati con un =json.dumps= e fare il tangling.
 Posso anche adattare i dati allo schema JSON di JSON Resume.
