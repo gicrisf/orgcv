@@ -3,13 +3,25 @@
 
 My Curriculum Vitae, written in Org-mode, LaTeX and Jinja2.
 
+** Features
+- [X] Documented through the main file (=cv.org= is a literate program);
+- [X] Minimal dependencies;
+- [X] Modular structure makes the code robust;
+- [X] Data written in flexible Python dictionaries but stored and transmitted through JSON chunks.
+- [X] Two column layout with =paracol= package and AltaCV LaTeX template;
+- [X] Customizable color palette;
+- [X] Customizable fonts (defaults are 'Roboto' and 'Lato');
+- [X] Fontawesome 5 icons;
+- [X] Clickable links with 'hyperref' LaTeX package;
+- [X] Support for XeLaTeX and LuaLaTeX;
+
 ** TODO
-- [ ] Python decorators to reduce boilerplate
-- [ ] Multilanguage support
-- [ ] Additional pages
-- [ ] External Python module to minimize redundancy
-- [ ] JSON Resume conversion
-- [ ] Markdown template
+- [ ] Python decorators to reduce boilerplate;
+- [ ] Multilanguage support;
+- [ ] Additional pages;
+- [ ] External Python module to minimize redundancy;
+- [ ] JSON Resume conversion;
+- [ ] Markdown template;
 
 ** Donate
 Why don't you help me keeping myself awake buying me a coffee?
