@@ -313,9 +313,16 @@ Medicinal chemistry student at Unibo • Into spectroscopy and radicals • Linu
 #+end_src
 
 ** Projects
+In questo blocco è possibile inserire o rimuovere i progetti che vogliamo mostrare nell'esportato.
+
 #+name: projects-json
 #+begin_src python :session cv-venv :results output :noweb no-export eval :var esrafel=esrafel-project() :var zhuia=zhuia-project() :var gotosi=gotosi-project() :var unsplash=unsplash-project
-projects = [esrafel, zhuia, gotosi, unsplash]
+projects = [
+    esrafel,
+    zhuia,
+#    gotosi,
+    unsplash
+]
 projects = [json.loads(x) for x in projects]
 
 print(json.dumps(projects))
@@ -529,8 +536,25 @@ print(json.dumps(tesi_sperimentale))
 : {"name": "Tirocinio per tesi sperimentale", "where": "Dipartimento di \"Chimica Giacomo Ciamician\" - Unibo", "when": "Ottobre 2019 - Maggio 2020"}
 
 ** Istruzione
+
+#+name: edu-json
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var diploma=diploma-scientifico-edu() :var ctf=ctf-edu() :var adme=adme-edu()
+edu_list = [
+    diploma,
+    ctf,
+    adme,
+]
+
+edu = [json.loads(x) for x in edu_list]
+
+print(json.dumps(edu))
+#+end_src
+
+#+RESULTS: edu-json
+: [{"name": "Diploma Liceo Scientifico", "where": "Liceo Scientifico E. Majorana - Caltagirone", "when": "Sett. 2009 - Giugno 2014"}, {"name": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche", "where": "Dipartimento di Farmacia e Biotecnologie FABIT - Universit\u00e0 di Bologna", "when": "Sett. 2014 - In corso"}, {"name": "Summer School in Pharmaceutical Analysis", "where": "Campus di Rimini - Palazzo Ruffi-Briolini", "when": "18 Sett. 2017 - 20 Sett. 2017", "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"}]
+
 *** Diploma Scientifico
-#+name: diploma-scientifico-istruzione
+#+name: diploma-scientifico-edu
 #+begin_src python :session cv-venv :results output
 diploma_scientifico = {
     "name": "Diploma Liceo Scientifico",
@@ -541,8 +565,11 @@ diploma_scientifico = {
 print(json.dumps(diploma_scientifico))
 #+end_src
 
+#+RESULTS: diploma-scientifico-edu
+: {"name": "Diploma Liceo Scientifico", "where": "Liceo Scientifico E. Majorana - Caltagirone", "when": "Sett. 2009 - Giugno 2014"}
+
 *** CTF
-#+name: ctf-istruzione
+#+name: ctf-edu
 #+begin_src python :session cv-venv :results output
 ctf = {
     "name": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche",
@@ -553,11 +580,11 @@ ctf = {
 print(json.dumps(ctf))
 #+end_src
 
-#+RESULTS: ctf-istruzione
+#+RESULTS: ctf-edu
 : {"name": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche", "where": "Dipartimento di Farmacia e Biotecnologie FABIT - Universit\u00e0 di Bologna", "when": "Sett. 2014 - In corso"}
 
 *** Summer School in Pharma Analysis
-#+name: pharma-analysis-istruzione
+#+name: adme-edu
 #+begin_src python :session cv-venv :results output
 pharma_analysis_summer_school = {
     "name": "Summer School in Pharmaceutical Analysis",
@@ -569,7 +596,7 @@ pharma_analysis_summer_school = {
 print(json.dumps(pharma_analysis_summer_school))
 #+end_src
 
-#+RESULTS: pharma-analysis-istruzione
+#+RESULTS: adme-edu
 : {"name": "Summer School in Pharmaceutical Analysis", "where": "Campus di Rimini - Palazzo Ruffi-Briolini", "when": "18 Sett. 2017 - 20 Sett. 2017", "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"}
 
 ** Lingue
@@ -600,6 +627,27 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 <<document-latex>>
 #+end_src
 
+** Dipendenze
+Prima di tentare la conversione in pdf (es. con =pdflatex=) ricorda che sono necessarie le seguenti dipendenze.
+
+*** Fonts
+In effetti, su AUR si trova =texlive-fonts-fontawesome=...
+
+#+begin_src bash
+yay texlive-fonts-fontawesome
+#+end_src
+
+... ma visto che ci serve anche Roboto, facciamo prima ad installare il pacchetto coi font:
+
+#+begin_src bash
+sudo pacman -S texlive-fontsextra
+#+end_src
+
+*** Bibtex
+#+begin_src bash
+sudo pacman -S texlive-bibtexextra
+#+end_src
+
 ** Head
 *** Overview
 #+name: head-latex
@@ -622,8 +670,6 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 <<columns-latex>>
 
 <<footnotes-latex>>
-
-<<bib-latex>>
 
 <<exporter-latex>>
 #+end_src
@@ -704,7 +750,7 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 \usepackage[bottom]{footmisc}
 #+end_src
 
-*** Bibliography
+*** TODO Bibliography
 #+name: bib-latex
 #+begin_src latex
 \DeclareNameAlias{sortname}{given-family}
@@ -713,6 +759,11 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 
 \usepackage[style=trad-abbrv,sorting=none,sortcites=true,doi=false,url=false,giveninits=true,hyperref]{biblatex}
 #+end_src
+
+Per il momento elimino perché:
+#+begin_quote
+! LaTeX Error: Option clash for package biblatex.
+#+end_quote
 
 *** Exporter
 #+name: exporter-latex
@@ -727,8 +778,6 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 #+name: document-latex
 #+begin_src latex :noweb no-export :results output latex :export results
 \begin{document}
-
-<<main-header-latex>>
 
 <<personalinfo-latex()>>
 
@@ -765,7 +814,7 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 \cvsection{Istruzione}
 \label{sec:org75d0adb}
 
-<<istruzione-latex>>
+<<edu-latex()>>
 
 \cvsection{Lingue}
 
@@ -774,6 +823,165 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 \end{paracol}
 \end{document}
 #+end_src
+
+#+RESULTS: document-latex
+#+begin_export latex
+\begin{document}
+
+\name{ Giovanni Crisalfi }
+\photoR{2.8cm}{ propic-ciliegio.jpg }
+\tagline{ Studente }
+
+\personalinfo{
+  \homepage{ www.zwitterio.it }
+  \email{ giovanni.crisalfi@protonmail.com }
+  \phone{ +39 3331604917 }
+  \location{ Caltagirone, CT }
+  \github{ gicrisf }
+  \twitter{ gicrisf }
+  % \linkedin{  }
+  \dob{ 27 Dicembre 1995 }
+  \driving{ Patente B }
+}
+
+\makecvheader
+
+\begin{paracol}{2}
+
+\begin{quote}
+Studente di CTF appassionato di spettroscopia e simulazioni computazionali.
+Sostenitore dell'Open Source, vivo su Linux e scrivo sia codice che prosa su Emacs.
+Mi interesso di epistemologia, cinema, fumetti e altre lettere.
+\end{quote}
+
+\vspace{.1cm}
+
+\cvsection{Progetti}
+\label{sec:org9314928}
+
+\cvevent{ Esrafel }{ Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods }{ Marzo 2020 - Marzo 2022  }
+
+\begin{itemize}
+\item \href{ https://github.com/gicrisf/esrafel }{\faGithub gicrisf/esrafel}
+\end{itemize}
+\vspace{.2cm}
+
+\cvtag{ Desktop dev. }
+\cvtag{ Rust }
+\cvtag{ GTK }
+\cvtag{ Spettroscopia }
+\par\divider
+\cvevent{ Zhuia }{ An elegant but still playful theme for Zola }{ Feb. 2022 - Marzo 2022  }
+
+\begin{itemize}
+\item \href{ https://github.com/gicrisf/zhuia }{\faGithub gicrisf/zhuia}
+\end{itemize}
+\vspace{.2cm}
+
+\cvtag{ Web dev. }
+\cvtag{ Rust }
+\cvtag{ Zola }
+\cvtag{ Tera }
+\cvtag{ Liquid }
+\cvtag{ Jinja2 }
+\par\divider
+\cvevent{ Gotosi }{ Isotope oriented periodic table of elements }{ Feb. 2021 - Maggio 2021  }
+
+\begin{itemize}
+\item \href{ https://github.com/gicrisf/gotosi }{\faGithub gicrisf/gotosi}
+\end{itemize}
+\vspace{.2cm}
+
+\cvtag{ Desktop dev. }
+\cvtag{ Vala }
+\cvtag{ C }
+\cvtag{ GTK }
+\cvtag{ Chemistry }
+\par\divider
+\cvevent{ 3D renders }{ Bio/Chem molecular renders for fun and blogging }{   }
+
+\begin{itemize}
+\item \href{ https://unsplash.com/@gicrisf }{\faUnsplash @gicrisf}
+\end{itemize}
+\vspace{.2cm}
+
+\cvtag{ Grafica }
+\cvtag{ Chimica }
+\cvtag{ GIMP }
+\cvtag{ VMD }
+\par\divider
+
+\cvsection{Seminari}
+\label{sec:org1d737ad}
+
+\cvevent{ Festival della Scienza Medica Palazzo Re Enzo - piazza Nettuno 1 - Bologna Anni: 2016 - 2017 - 2018 - 2019 }
+
+\par\divider
+\cvevent{ 18° Congresso Nazionale Sitox Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna 10 Apr. 2018 - 13 Apr. 2018 }
+
+\par\divider
+\cvevent{ Driving the development of bio-based polymers with molecular simulation Chemistry World Webinar 13 Apr. 2022 }
+
+\par\divider
+\cvevent{ Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy Chemistry World Webinar 24 Maggio 2022 }
+
+\par\divider
+
+\switchcolumn
+
+\cvsection{Competenze}
+\label{sec:orga689fa6}
+
+\cvtag{Analisi farmaceutica}
+\cvtag{Grafica}
+\cvtag{Data viz}
+
+\vspace{-.1cm}
+
+\cvtag{Rust}
+\cvtag{Vala}
+\cvtag{Python}
+\cvtag{JavaScript}
+
+\vspace{.1cm}
+
+\cvtag{Lisp}
+\cvtag{GTK}
+\cvtag{HTML/CSS}
+\cvtag{Git}
+
+\cvsection{Esperienze}
+\label{sec:org5a7829c}
+
+\cvevent{Tirocinio in Farmacia Ospedaliera}{ Ospedale Gravina di Caltagirone}{ Ottobre 2020 - Luglio 2021}{}
+
+\par\divider
+
+\cvevent{Tirocinio per tesi sperimentale}{ Dipartimento di Chimica "Giacomo Ciamician" - Unibo}{ Ottobre 2019 - Maggio 2020}{}
+
+\cvsection{Istruzione}
+\label{sec:org75d0adb}
+
+\cvevent{Summer School in Pharmaceutical Analysis}{ Campus di Rimini - Palazzo Ruffi-Briolini}{ 18 Sett. 2017 – 20 Sett. 2017}{}
+\begin{itemize}
+\item Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies
+\end{itemize}
+
+\divider
+
+\cvevent{Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche}{ Dipartimento di Farmacia e Biotecnologie FABIT | Università di Bologna}{ Sett. 2014 -- In corso}{}
+
+\divider
+
+\cvevent{Diploma}{ Liceo Scientifico E. Majorana | Caltagirone}{ Sett. 2009 -- Giugno 2014}{}
+
+\cvsection{Lingue}
+
+
+
+\end{paracol}
+\end{document}
+#+end_export
 
 *** Header
 **** Personal Info
@@ -851,25 +1059,6 @@ print(template.render(ctx=ctx))
 }
 #+end_export
 
-#+RESULTS:
-#+begin_example
-\name{ Giovanni Crisalfi }
-\photoR{2.8cm}{ propic-ciliegio.jpg }
-\tagline{ Studente }
-
-\personalinfo{
-  \homepage{ www.zwitterio.it }
-  \email{ giovanni.crisalfi@protonmail.com }
-  \phone{ +39 3331604917 }
-  \location{ Caltagirone, CT }
-  \github{ gicrisf }
-  \twitter{ gicrisf }
-  % \linkedin{aidan-scannell-82522789/}
-  \dob{ 27 Dicembre 1995 }
-  \driving{ Patente B }
-}
-#+end_example
-
 *** Column 1
 **** Personal Statement
 #+name: personal-statement-latex
@@ -892,72 +1081,108 @@ Mi interesso di epistemologia, cinema, fumetti e altre lettere.
 #+name: projects-jinja-latex
 #+begin_src latex :results output
 {% for project in projects %}
-\cvevent{ {{project.name}} }{ {{project.description}} }{ {{project.when}}  }
+\cvevent{ {%- if project.name -%}{{project.name}}{%- endif -%} }
+  { {%- if project.description -%}{{project.description}}{%- endif -%} }
+  { {%- if project.when -%}{{project.when}}{%- endif -%} } {}
 
 \begin{itemize}
 \item \href{ {{project.link.href}} }{\fa{{ project.link.icon }} {{ project.link.text }}}
 \end{itemize}
 \vspace{.2cm}
 
-{% for tag in projects.tags %}
-  \cvtag{ {{tag}} }
+{% for tag in project.tags %}
+\cvtag{ {{tag}} }
 {% endfor %}
+\par\divider
 {% endfor %}
 #+end_src
 
 Renderizziamo tutti i progetti:
 
 #+name: projects-latex
-#+begin_src python :session cv-venv :results output :var templ=projects-jinja-latex :var ctx=projects-json()
+#+begin_src python :session cv-venv :results output latex :var templ=projects-jinja-latex :var ctx=projects-json()
+try:
+    import jinja2
+    import json
+except Exception as e:
+    print(e)
+
 projects=json.loads(ctx)
 env = jinja2.Environment()
+env.trim_blocks = True
+env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(projects=projects))
 #+end_src
 
 #+RESULTS: projects-latex
-#+begin_example
-
-\cvevent{ Esrafel }{ Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods }{ Marzo 2020 - Marzo 2022  }
+#+begin_export latex
+\cvevent{Esrafel}
+  {Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods}
+  {Marzo 2020 - Marzo 2022} {}
 
 \begin{itemize}
 \item \href{ https://github.com/gicrisf/esrafel }{\faGithub gicrisf/esrafel}
 \end{itemize}
 \vspace{.2cm}
 
-
-
-\cvevent{ Zhuia }{ An elegant but still playful theme for Zola }{ Feb. 2022 - Marzo 2022  }
+\cvtag{ Desktop dev. }
+\cvtag{ Rust }
+\cvtag{ GTK }
+\cvtag{ Spettroscopia }
+\par\divider
+\cvevent{Zhuia}
+  {An elegant but still playful theme for Zola}
+  {Feb. 2022 - Marzo 2022} {}
 
 \begin{itemize}
 \item \href{ https://github.com/gicrisf/zhuia }{\faGithub gicrisf/zhuia}
 \end{itemize}
 \vspace{.2cm}
 
-
-
-\cvevent{ Gotosi }{ Isotope oriented periodic table of elements }{ Feb. 2021 - Maggio 2021  }
+\cvtag{ Web dev. }
+\cvtag{ Rust }
+\cvtag{ Zola }
+\cvtag{ Tera }
+\cvtag{ Liquid }
+\cvtag{ Jinja2 }
+\par\divider
+\cvevent{Gotosi}
+  {Isotope oriented periodic table of elements}
+  {Feb. 2021 - Maggio 2021} {}
 
 \begin{itemize}
 \item \href{ https://github.com/gicrisf/gotosi }{\faGithub gicrisf/gotosi}
 \end{itemize}
 \vspace{.2cm}
 
-
-
-\cvevent{ 3D renders }{ Bio/Chem molecular renders for fun and blogging }{   }
+\cvtag{ Desktop dev. }
+\cvtag{ Vala }
+\cvtag{ C }
+\cvtag{ GTK }
+\cvtag{ Chemistry }
+\par\divider
+\cvevent{3D renders}
+  {Bio/Chem molecular renders for fun and blogging}
+  {} {}
 
 \begin{itemize}
 \item \href{ https://unsplash.com/@gicrisf }{\faUnsplash @gicrisf}
 \end{itemize}
 \vspace{.2cm}
-#+end_example
+
+\cvtag{ Grafica }
+\cvtag{ Chimica }
+\cvtag{ GIMP }
+\cvtag{ VMD }
+\par\divider
+#+end_export
 
 **** Seminari
 #+name: seminari-jinja-latex
 #+begin_src latex
 {% for seminario in seminari %}
-\cvevent{ {{seminario.name}} {{seminario.where}} {{seminario.when}} }
+\cvevent{ {%- if seminario.name -%} {{seminario.name}}{%- endif -%} }{ {%- if seminario.where -%} {{seminario.where}}{%- endif -%} }{ {%- if seminario.when -%} {{seminario.when}}{%- endif -%} }{}
 
 \par\divider
 {% endfor %}
@@ -969,28 +1194,27 @@ Renderizziamo tutti i progetti:
 #+begin_src python :session cv-venv :results output latex :var templ=seminari-jinja-latex :var ctx=seminari-json()
 seminari=json.loads(ctx)
 env = jinja2.Environment()
+env.trim_blocks = True
+env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(seminari=seminari))
 #+end_src
 
 #+RESULTS: seminari-latex
 #+begin_export latex
+[{"name": "Diploma Liceo Scientifico", "where": "Liceo Scientifico E. Majorana - Caltagirone", "when": "Sett. 2009 - Giugno 2014"}, {"name": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche", "where": "Dipartimento di Farmacia e Biotecnologie FABIT - Universit\u00e0 di Bologna", "when": "Sett. 2014 - In corso"}, {"name": "Summer School in Pharmaceutical Analysis", "where": "Campus di Rimini - Palazzo Ruffi-Briolini", "when": "18 Sett. 2017 - 20 Sett. 2017", "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"}]
+\cvevent{Diploma Liceo Scientifico}{Liceo Scientifico E. Majorana - Caltagirone}{Sett. 2009 - Giugno 2014}{}
 
-\cvevent{ Festival della Scienza Medica Palazzo Re Enzo - piazza Nettuno 1 - Bologna Anni: 2016 - 2017 - 2018 - 2019 }
+\divider
+\cvevent{Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche}{Dipartimento di Farmacia e Biotecnologie FABIT - Università di Bologna}{Sett. 2014 - In corso}{}
 
-\par\divider
+\divider
+\cvevent{Summer School in Pharmaceutical Analysis}{Campus di Rimini - Palazzo Ruffi-Briolini}{18 Sett. 2017 - 20 Sett. 2017}{}
+\begin{itemize}
+\item Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies
+\end{itemize}
 
-\cvevent{ 18° Congresso Nazionale Sitox Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna 10 Apr. 2018 - 13 Apr. 2018 }
-
-\par\divider
-
-\cvevent{ Driving the development of bio-based polymers with molecular simulation Chemistry World Webinar 13 Apr. 2022 }
-
-\par\divider
-
-\cvevent{ Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy Chemistry World Webinar 24 Maggio 2022 }
-
-\par\divider
+\divider
 #+end_export
 
 *** Column 2
@@ -1027,26 +1251,53 @@ print(template.render(seminari=seminari))
 #+end_src
 
 **** Istruzione
-#+name: istruzione-latex
+TODO manage più commenti (comments)
+
+#+name: edu-jinja-latex
 #+begin_src latex
-\cvevent{Summer School in Pharmaceutical Analysis}{ Campus di Rimini - Palazzo Ruffi-Briolini}{ 18 Sett. 2017 – 20 Sett. 2017}{}
+{% for event in edu|reverse %}
+\cvevent{ {%- if event.name -%}{{ event.name }}{%- endif -%} }{ {%- if event.where -%}{{ event.where }}{%- endif -%} }{ {%- if event.when -%}{{ event.when }}{%- endif -%} }{}
+{% if event.comment -%}
+\begin{itemize}
+\item {{ event.comment }}
+\end{itemize}
+{% endif %}
+
+\divider
+{% endfor %}
+#+end_src
+
+Renderizziamo:
+
+#+name: edu-latex
+#+begin_src python :session cv-venv :results output latex :var templ=edu-jinja-latex :var ctx=edu-json()
+edu=json.loads(ctx)
+env = jinja2.Environment()
+env.trim_blocks = True
+env.lstrim_blocks = True
+template = env.from_string(templ)
+print(template.render(edu=edu))
+#+end_src
+
+#+RESULTS: edu-latex
+#+begin_export latex
+\cvevent{Summer School in Pharmaceutical Analysis}{Campus di Rimini - Palazzo Ruffi-Briolini}{18 Sett. 2017 - 20 Sett. 2017}{}
 \begin{itemize}
 \item Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies
 \end{itemize}
 
 \divider
-
-\cvevent{Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche}{ Dipartimento di Farmacia e Biotecnologie FABIT | Università di Bologna}{ Sett. 2014 -- In corso}{}
+\cvevent{Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche}{Dipartimento di Farmacia e Biotecnologie FABIT - Università di Bologna}{Sett. 2014 - In corso}{}
 
 \divider
+\cvevent{Diploma Liceo Scientifico}{Liceo Scientifico E. Majorana - Caltagirone}{Sett. 2009 - Giugno 2014}{}
 
-\cvevent{Diploma}{ Liceo Scientifico E. Majorana | Caltagirone}{ Sett. 2009 -- Giugno 2014}{}
-#+end_src
+\divider
+#+end_export
 
 **** Lingue
-#+begin_export latex
-\cvsection{Lingue}
-
+#+name: lingue-latex
+#+begin_src latex
 \cvskill{Italiano}{5}
 \divider
 
@@ -1054,12 +1305,10 @@ print(template.render(seminari=seminari))
 \divider
 
 \cvskill{Francese}{1}
+#+end_src
 
-% %% Yeah I didn't spend too much time making all the
-% %% spacing consistent... sorry. Use \smallskip, \medskip,
-% %% \bigskip, \vpsace etc to make ajustments.
-% \medskip
-#+end_export
-
-* Markdown
+* TODO Markdown
 Qui potrei usare ox-hugo
+* TODO JSON
+Posso esportare tutti i dati con un =json.dumps= e fare il tangling.
+Posso anche adattare i dati allo schema JSON di JSON Resume.
