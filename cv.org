@@ -590,6 +590,21 @@ print(json.dumps(programming))
 : {"name": "Programming", "keywords": ["Rust", "Python", "Lisp", "Vala", "C", "Git", "Php"]}
 
 ** Esperienze
+#+name: exps-json
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var tirocinio=farmacia-ospedaliera-exp() :var tesi=tesi-sperimentale-exp()
+exps = [
+    tirocinio,
+    tesi,
+]
+
+exps = [json.loads(x) for x in exps]
+
+print(json.dumps(exps))
+#+end_src
+
+#+RESULTS: exps-json
+: [{"name": "Tirocinio in Farmacia Ospedaliera", "where": "Ospedale Gravina di Caltagirone", "when": "Ottobre 2020 - Luglio 2021"}, {"name": "Tirocinio per tesi sperimentale", "where": "Dipartimento di \"Chimica Giacomo Ciamician\" - Unibo", "when": "Ottobre 2019 - Maggio 2020"}]
+
 *** Farmacia ospedaliera
 #+name: farmacia-ospedaliera-exp
 #+begin_src python :session cv-venv :results output
@@ -903,7 +918,7 @@ Per il momento elimino perché:
 \cvsection{Esperienze}
 \label{sec:org5a7829c}
 
-<<esperienze-latex>>
+<<exps-latex()>>
 
 \cvsection{Istruzione}
 \label{sec:org75d0adb}
@@ -1178,17 +1193,41 @@ print(template.render(skills=skills))
 \cvtag { Data viz. }
 #+end_export
 
-**** Esperienze
-#+name: esperienze-latex
+**** Experiences
+#+name: exps-jinja-latex
 #+begin_src latex
-\cvevent{Tirocinio in Farmacia Ospedaliera}{ Ospedale Gravina di Caltagirone}{ Ottobre 2020 - Luglio 2021}{}
+{% for exp in exps %}
+\cvevent{ {{exp.name}} }{ {{ exp.where }} }{ {{ exp.when }} }{}
+{% if not loop.last %}
 
 \par\divider
 
-\cvevent{Tirocinio per tesi sperimentale}{ Dipartimento di Chimica "Giacomo Ciamician" - Unibo}{ Ottobre 2019 - Maggio 2020}{}
+{% endif %}
+{% endfor %}
 #+end_src
 
-**** Istruzione
+Renderizziamo:
+
+#+name: exps-latex
+#+begin_src python :session cv-venv :results output latex :var templ=exps-jinja-latex :var ctx=exps-json()
+exps=json.loads(ctx)
+env = jinja2.Environment()
+env.trim_blocks = True
+env.lstrim_blocks = True
+template = env.from_string(templ)
+print(template.render(exps=exps))
+#+end_src
+
+#+RESULTS: exps-latex
+#+begin_export latex
+\cvevent{ Tirocinio in Farmacia Ospedaliera }{ Ospedale Gravina di Caltagirone }{ Ottobre 2020 - Luglio 2021 }{}
+
+\par\divider
+
+\cvevent{ Tirocinio per tesi sperimentale }{ Dipartimento di "Chimica Giacomo Ciamician" - Unibo }{ Ottobre 2019 - Maggio 2020 }{}
+#+end_export
+
+**** Education
 TODO manage più commenti (comments)
 
 #+name: edu-jinja-latex
@@ -1264,7 +1303,6 @@ print(template.render(langs=langs))
 \divider
 \cvskill { Francese }{ 1 }
 #+end_export
-
 
 * TODO Markdown
 Qui potrei usare ox-hugo
