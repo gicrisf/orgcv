@@ -18,6 +18,21 @@ Moreover, it's an example of literate programming in org-mode.
 
 {{{more}}}
 
+* Quickstart
+Just run those blocks to set up the Python environment and importing the libraries, then you can tangle the files you need.
+
+Activate your pre-setted venv:
+#+begin_src emacs-lisp :noweb no-export :results silent
+<<venv-activate>>
+#+end_src
+
+Import the dependencies:
+#+begin_src python :noweb no-export :results output silent
+<<trying-importing-python-libs>>
+#+end_src
+
+Read the results in the minibuffer.
+
 * Intro
 I'm writing this because I was using another org-mode method to manage my CV which is too interlaced with the LaTeX syntax and relies too much on org macros.
 Although that method was effective for managing a single CV in LaTeX and had a lot of advantages, I wanted something more solid and modular.
@@ -194,6 +209,7 @@ Org-mode adds another layer that makes things a little more complicated.
 
 https://emacs.stackexchange.com/questions/24267/using-org-babel-to-enable-virtualenv
 
+#+name: venv-activate
 #+BEGIN_SRC elisp :session cv-venv :results silent
 ;; doesn't return any value or output, so I'm silencing this block
 (pyvenv-activate "~/Projects/my-org-resume/cv-venv")
@@ -203,11 +219,13 @@ https://emacs.stackexchange.com/questions/24267/using-org-babel-to-enable-virtua
 
 Let's verify that the venv was activated (result is silenced, look at the minibuffer).
 
+#+name: echo-venv
 #+BEGIN_SRC sh :session cv-venv :results silent
 echo $VIRTUAL_ENV
 which python
 #+END_SRC
 
+#+name: printing-python-sys-path
 #+BEGIN_SRC python :results silent :session cv-venv
 import sys
 print('\n'.join(sys.path))
@@ -218,6 +236,7 @@ print('\n'.join(sys.path))
 
 Well, now let's see if the package importing is gone as expected:
 
+#+name: trying-importing-python-libs
 #+begin_src python :results output :session cv-venv
 try:
     import jinja2
