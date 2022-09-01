@@ -443,20 +443,32 @@ Medicinal chemistry student at Unibo • Into spectroscopy and radicals • Linu
 Here we can insert or remove the project that we want to show in the exported CV.
 
 #+name: projects-json
-#+begin_src python :session cv-venv :results output :noweb no-export eval :var esrafel=esrafel-project() :var zhuia=zhuia-project() :var gotosi=gotosi-project() :var unsplash=unsplash-project
-projects = [
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var esrafel=esrafel-project() :var zhuia=zhuia-project() :var gotosi=gotosi-project() :var unsplash=unsplash-project :var zerm=zerm-project() :var orgcv=orgcv-project() :var target=cv-target
+general = [
     esrafel,
     zhuia,
 #    gotosi,
     unsplash
 ]
-projects = [json.loads(x) for x in projects]
+
+web = [
+    zhuia,
+    zerm,
+    orgcv,
+]
+
+projects = {
+    "general": general,
+    "web": web
+}
+
+projects = [json.loads(x) for x in projects[target]]
 
 print(json.dumps(projects))
 #+end_src
 
 #+RESULTS: projects-json
-: [{"name": "Esrafel", "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods", "when": "Marzo 2020 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/esrafel", "href": "https://github.com/gicrisf/esrafel"}, "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]}, {"name": "Zhuia", "description": "An elegant but still playful theme for Zola", "when": "Feb. 2022 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/zhuia", "href": "https://github.com/gicrisf/zhuia"}, "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]}, {"name": "Gotosi", "description": "Isotope oriented periodic table of elements", "when": "Feb. 2021 - Maggio 2021", "link": {"icon": "Github", "text": "gicrisf/gotosi", "href": "https://github.com/gicrisf/gotosi"}, "tags": ["Desktop dev.", "Vala", "C", "GTK", "Chemistry"]}, {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}]
+: [{"name": "Esrafel", "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods", "when": "Marzo 2020 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/esrafel", "href": "https://github.com/gicrisf/esrafel"}, "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]}, {"name": "Zhuia", "description": "An elegant but still playful theme for Zola", "when": "Feb. 2022 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/zhuia", "href": "https://github.com/gicrisf/zhuia"}, "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]}, {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}]
 
 *** Esrafel
 #+name: esrafel-project
@@ -546,6 +558,42 @@ print(json.dumps(unsplash))
 
 #+RESULTS: unsplash-project
 : {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}
+
+*** Zerm
+#+name: zerm-project
+#+begin_src python :session cv-venv :results output
+z = {
+    "name": "Zerm",
+    "description": "My fork of a minimalist and dark theme for Zola",
+    "when": "Giugno 2021 - In corso",
+    "link": {
+        "icon": "Github",
+        "text": "gicrisf/zerm",
+        "href": "https://github.com/gicrisf/zerm"
+    },
+    "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]
+}
+
+print(json.dumps(z))
+#+end_src
+
+*** Org CV
+#+name: orgcv-project
+#+begin_src python :session cv-venv :results output
+z = {
+    "name": "Org CV",
+    "description": "My Curriculum Vitae, written in Org-mode and powered by LaTeX + Python/Jinja2.",
+    "when": "Agosto 2022",
+    "link": {
+        "icon": "Github",
+        "text": "gicrisf/orgcv",
+        "href": "https://github.com/gicrisf/orgcv"
+    },
+    "tags": ["Emacs", "Org Mode", "Python", "Jinja2", "Liquid"]
+}
+
+print(json.dumps(z))
+#+end_src
 
 ** Seminars
 #+name: seminars-json
@@ -683,82 +731,58 @@ print(json.dumps(t))
 : {"name": "Molecular Machines Days", "where": "Dipartimento di Chimica Giacomo Ciamician, Aula I", "when": "21 Nov. 2018"}
 
 ** Skills
-*** General
-#+name: general-skills-json
+# Questo è uno di quei casi in cui andrebbe anche bene raccogliere i dati come =value= anziché come output, riducendo così la quantità di JSON chunks che fanno avanti e indietro.
+# Potrei farlo per mezzo di una tabella, ma il problema della tabella è la scarsa flessibilità. E se domani volessi associare dei valori di autovalutazione per ogni tag?
+# Per ridurre il boilerplate (e considerata la semplicità disarmante del codice), ho deciso di raccogliere tutto in un unico blocco.
+
+Here I could easily take the data from a table and loading them in the block as =value= (not =output=). This way, I would massively reduce the number of JSON chunks delivered between the blocks.
+But what if I want to extend the logic of the template associating an autovalutation parameter to the tag?
+There's a simple way to solve this problem and highly reduce the boilerplate. Just write everything in the block below.
+
+#+name: skills-json
 #+begin_src python :session cv-venv :results output
+# GENERAL
+general = ["Pharmaceutical chemistry", "Spectroscopy",
+           "Programming", "Web dev.", "Desktop dev.",
+           "Data viz."]
+
+# WEB DEV.
+web = ["HTML5", "CSS/SCSS", "JS/TS",
+       "Liquid", "Jinja2", "Tera",
+       "Flask", "Django", "Pelican",
+       "Rust", "PHP", "Wordpress",
+       "Grav", "Twig", "Zola", "Elm"]
+
+# CTF/Pharmaceutical Chemistry
+pharma = ["Pharmaceutical Analysis", "Organic Chemistry",
+          "EPR/NMR Spectroscopy", "Stereochemistry",
+          "Data viz."]
+
+# Desktop/Backend
+desktop = ["Rust", "Python", "Lisp", "Vala", "C", "Git", "PHP",
+           "GTK", "Numpy", "Matplotlib", "LaTeX", "Bash"]
+
+# Graphics
+graphics = ["GIMP", "Inkscape", "VMD"]
+
+# Build the dictionary
 skills = {
     "name": "Skills",
-    "keywords": ["Pharmaceutical chemistry",
-                 "Spectroscopy",
-                 "Programming",
-                 "Web dev.",
-                 "Desktop dev.",
-                 "Data viz."]
+    "categories": {
+        "general": general,
+        "web": web,
+        "pharma": pharma,
+        "desktop": desktop,
+        "graphics": graphics,
+    }
 }
 
+# Print out the JSON
 print(json.dumps(skills))
 #+end_src
 
-#+RESULTS: general-skills-json
-: {"name": "Skills", "keywords": ["Pharmaceutical chemistry", "Spectroscopy", "Programming", "Web dev.", "Desktop dev.", "Data viz."]}
-
-*** Web
-#+name: web-skills-json
-#+begin_src python :session cv-venv :results output
-web = {
-    "name": "Web Development",
-    "keywords": ["HTML5",
-                 "CSS",
-                 "JS/Typescript",
-                 "Liquid",
-                 "Jinja2",
-                 "Tera",
-                 "Twig",
-                 "Zola",
-                 "Pelican",
-                 "Jamstack"]
-}
-
-print(json.dumps(web))
-#+end_src
-
-*** CTF
-#+name: pharma-skills-json
-#+begin_src python :session cv-venv :results output
-pharma = {
-    "name": "Pharma",
-    "keywords": ["Pharmaceutical Analysis",
-                 "Organic Chemistry",
-                 "EPR/NMR Spectroscopy",
-                 "Stereochemistry",
-                 "Data viz."]
-}
-
-print(json.dumps(pharma))
-#+end_src
-
-#+RESULTS: pharma-skills-json
-: {"name": "Pharma", "keywords": ["Pharmaceutical Analysis", "Organic Chemistry", "EPR/NMR Spectroscopy", "Stereochemistry", "Data viz."]}
-
-*** Programming
-#+name: programming-skills-json
-#+begin_src python :session cv-venv :results output
-programming = {
-    "name": "Programming",
-    "keywords": ["Rust",
-                 "Python",
-                 "Lisp",
-                 "Vala",
-                 "C",
-                 "Git",
-                 "Php"]
-}
-
-print(json.dumps(programming))
-#+end_src
-
-#+RESULTS: programming-skills-json
-: {"name": "Programming", "keywords": ["Rust", "Python", "Lisp", "Vala", "C", "Git", "Php"]}
+#+RESULTS: skills-json
+: {"name": "Skills", "categories": {"general": ["Pharmaceutical chemistry", "Spectroscopy", "Programming", "Web dev.", "Desktop dev.", "Data viz."], "web": ["HTML5", "CSS/SCSS", "JS/TS", "Liquid", "Jinja2", "Tera", "Flask", "Django", "Pelican", "Rust", "PHP", "Wordpress", "Grav", "Twig", "Zola", "Elm"], "pharma": ["Pharmaceutical Analysis", "Organic Chemistry", "EPR/NMR Spectroscopy", "Stereochemistry", "Data viz."], "desktop": ["Rust", "Python", "Lisp", "Vala", "C", "Git", "PHP"], "graphics": ["GIMP", "Inkscape"]}}
 
 ** Experiences
 #+name: exps-json
@@ -787,9 +811,6 @@ farmacia_ospedaliera = {
 
 print(json.dumps(farmacia_ospedaliera))
 #+end_src
-
-#+RESULTS: farmacia-ospedaliera-exp
-: {"name": "Tirocinio in Farmacia Ospedaliera", "where": "Ospedale Gravina di Caltagirone", "when": "Ottobre 2020 - Luglio 2021"}
 
 *** Tesi sperimentale
 #+name: tesi-sperimentale-exp
@@ -902,13 +923,42 @@ emacs-lisp
 
 # Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un documento (=document=):
 
-The final LaTeX file (as every LaTeX file) will be mad of two parts: the =head= and the =document= (which is the body with the actual text):
+Select here what kind of document you want to target:
+- General (as =general=)
+- Pharma (as =pharma=, TODO)
+- Web (as =web=)
 
+#+name: cv-target
+#+begin_src python
+target="general"
+
+return(target)
+#+end_src
+
+#+RESULTS: cv-target
+: web
+
+The final LaTeX file (as every LaTeX file) will be made with two consequential parts: the =head= and the =document= (which is the body, the section with the actual text).
+
+This block tangles the general version:
+
+# :tangle cv.tex
 #+begin_src latex :noweb no-export :tangle cv.tex
 <<head-latex>>
 
-<<document-latex>>
+<<document-general-latex>>
 #+end_src
+
+This block tangles the web version:
+
+# :tangle cv-webdev.tex
+#+begin_src latex :noweb no-export
+<<head-latex>>
+
+<<document-web-latex>>
+#+end_src
+
+Just comment out the =:tangle= command to disable an export and speed up your compilation times!
 
 ** Dependencies
 In order to render the CV in LaTeX, I use the AltaCV template.
@@ -1143,8 +1193,8 @@ Probably, AltaCV already loads =biblatex=, so this command can be skipped.
 #+end_src
 
 ** Document
-*** Overview
-#+name: document-latex
+*** General
+#+name: document-general-latex
 #+begin_src latex :noweb no-export
 \begin{document}
 
@@ -1165,6 +1215,57 @@ Probably, AltaCV already loads =biblatex=, so this command can be skipped.
 \cvsection{Seminari}
 
 <<seminars-latex()>>
+
+\switchcolumn
+
+\cvsection{Competenze}
+
+<<skills-latex()>>
+
+\cvsection{Esperienze}
+
+<<exps-latex()>>
+
+\cvsection{Istruzione}
+
+<<edu-latex()>>
+
+\cvsection{Lingue}
+
+<<langs-latex()>>
+
+\end{paracol}
+\end{document}
+#+end_src
+
+*** Web Dev
+#+name: document-web-latex
+#+begin_src latex :noweb no-export
+\begin{document}
+
+<<personalinfo-latex()>>
+
+\makecvheader
+
+\begin{paracol}{2}
+
+<<personal-statement-latex()>>
+
+\vspace{.1cm}
+
+\cvsection{Progetti}
+
+<<projects-latex()>>
+
+% Seminars are chemistry-only
+% We can comment them out for a web cv
+% \cvsection{Seminari}
+
+% < <seminars-latex()> >
+
+\cvsection{Sviluppo Web}
+
+<<tools-latex()>>
 
 \switchcolumn
 
@@ -1406,6 +1507,16 @@ print(template.render(seminari=seminari))
 \cvevent{Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy}{Chemistry World Webinar}{24 Maggio 2022}{}
 #+end_export
 
+**** Web tools
+#+name: tools-latex
+#+begin_src org :session cv-venv :results value latex
+In questa versione del mio CV ho omesso progetti o seminari relativi alla chimica o sullo sviluppo di desktop app e mi sono focalizzato sullo sviluppo web.
+Ho iniziato ad utilizzare questi strumenti nell'ormai lontano 2017, per sviluppare il mio blog. Da allora, la cosa mi è sfuggita di mano. Come molti, ho cominciato con Wordpress, poi (per vari motivi) mi sono spostato su Django.
+Stando a contatto con l'ecosistema web di Python, mi sono innamorato di *Jinja2*, un motore di templating estremamente versatile che oggi vive una seconda vita con una sua reimplementazione in Ruby, cioè *Liquid*. Ho lavorato anche con Grav, in PHP, ed ho spesso messo le mani su framework per SPA in JS/Typescript, come React, Vue, Svelte ed Elm, ma il linguaggio "general purpose" che più mi ha conquistato è Rust, quindi negli ultimi anni ho scritto temi con Zola e Tera (altra reimplementazione di Jinja2, ma in Rust). Più di recente mi sono avvicinato a Yew, un framework che parte dalle intuizioni di React ed Elm per lo sviluppo di front-end app multithread JS/WASM.
+
+Per dimostrare la versatilità di Jinja2 (e Liquid/Tera), ho pensato di generare con esso anche questo CV: la repo con il codice (commentato passo-passo) è disponibile su GitHub (=orgcv=).
+#+end_src
+
 *** Column 2
 **** Skills
 # Stampa le keywords ed aggiungi un leggero spazio verticale ogni tre tag.
@@ -1413,7 +1524,7 @@ Print the keywords and add a light vertical space every three tag or when the ch
 
 #+name: skills-jinja-latex
 #+begin_src latex
-{% for skill in skills.keywords %}
+{% for skill in skills %}
 \cvtag { {{skill}} }
 {% if skill | length >= 14 %}
 
@@ -1433,29 +1544,15 @@ Print the keywords and add a light vertical space every three tag or when the ch
 Rendering:
 
 #+name: skills-latex
-#+begin_src python :session cv-venv :results output latex :var templ=skills-jinja-latex :var ctx=general-skills-json()
+#+begin_src python :session cv-venv :results output latex :var templ=skills-jinja-latex :var ctx=skills-json() :var target=cv-target
 skills=json.loads(ctx)
+skills = skills["categories"][str(target)]
 env = jinja2.Environment()
 env.trim_blocks = True
 env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(skills=skills))
 #+end_src
-
-#+RESULTS: skills-latex
-#+begin_export latex
-\cvtag { Pharmaceutical chemistry }
-
-\vspace{+.1cm}
-\cvtag { Spectroscopy }
-\cvtag { Programming }
-
-\vspace{+.1cm}
-
-\cvtag { Web dev. }
-\cvtag { Desktop dev. }
-\cvtag { Data viz. }
-#+end_export
 
 **** Experiences
 #+name: exps-jinja-latex
