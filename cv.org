@@ -10,12 +10,15 @@
 
 #+MACRO: more @@html:<!-- more -->@@
 
-Questo file raccoglie tutto il codice necessario a generare il mio CV nelle sue varie versioni.
-È anche un esempio di literate programming in org-mode.
+# Questo file raccoglie tutto il codice necessario a generare il mio CV nelle sue varie versioni.
+# È anche un esempio di literate programming in org-mode.
+
+This file sums up all the necessary code to generate my CV in all its versions.
+Moreover, it's an example of literate programming in org-mode.
 
 {{{more}}}
 
-* Introduzione
+* Intro
 Innanzitutto devo rappresentare in qualche modo i dati da riportare nei codici da intessere nelle parti successive. Ho molte opzioni. In JSON non se ne parla proprio. Sarebbe già più accettabile scrivere in TOML, ma in verità le opzioni che mi convincono di più sono due:
 - Python dictionaries
 - Elisp association lists
@@ -35,29 +38,46 @@ Inoltre, con Jinja2 posso facilmente esportare anche delle pagine HTML e sarebbe
 Non ci resta che costruire un ambiente Python adatto.
 
 * Python environment
+#+begin_comment
 #+begin_quote
 ATTENZIONE!
 
 Per i più disattenti, il CV non può essere renderizzato senza alcune piccole dipendenze Python.
 #+end_quote
+#+end_comment
 
-Come si installa Jinja2?
-[[https://jinja.palletsprojects.com/en/3.1.x/intro/#installation][Basta dare un occhio alla documentazione]].
+#+begin_quote
+ALERT!
+
+I write this for the distracted ones: the CV cannot be rendered without some Python dependencies.
+#+end_quote
+
+# Come si installa Jinja2?
+
+How should one install Jinja2?
+
+# [[https://jinja.palletsprojects.com/en/3.1.x/intro/#installation][Basta dare un occhio alla documentazione]].
 
 ** Installazione globale
-Usare un [[https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments][virtual environment]] è preferibile, ma installare globalmente è più semplice:
+# Usare un [[https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments][virtual environment]] è preferibile, ma installare globalmente è più semplice:
+
+A virtual environment is better in the long run, but installing globally is easier:
 
 #+begin_src bash
 $ pip install Jinja2
 #+end_src
 
-Per il supporto multilingua, bisogna anche installare Babel, che non è automaticamente incluso tra le dipendenze.
+# Per il supporto multilingua, bisogna anche installare Babel, che non è automaticamente incluso tra le dipendenze.
+
+To gain a multilang support, we should install Babel too, which isn't automatically included in the dependencies.
 
 #+begin_src bash
 $ pip install Babel
 #+end_src
 
-Io preferisco usare un virtual environment, ma lascio comunque qui i comandi base per chi volesse semplificarsi la vita.
+# Io preferisco usare un virtual environment, ma lascio comunque qui i comandi base per chi volesse semplificarsi la vita.
+
+As previously said, I prefer using a virtual environment, but I leave the basic commands up her for anyone else who could prefer them.
 
 ** Virtualenv
 In condizioni normali, questo è quello che faremmo per creare un virtual environment (chiamato =venv=).
@@ -84,18 +104,25 @@ $ virtualenv cv-venv
 # TODO: scriptare all'interno di questo file la creazione dell'environment.
 
 ** Virtualenv ed Emacs
-In Emacs le cose si fanno un po' più complicate.
-Da StackOverlow:
+In Emacs, things get a little more convoluted.
+# In Emacs le cose si fanno un po' più complicate.
+
+From StackOverlow:
+# Da StackOverlow:
 - [[https://stackoverflow.com/questions/38535499/how-to-setup-emacs-to-use-a-given-python-virtualenv][How to setup Emacs to use a given Python virtualenv?]]
 - [[https://stackoverflow.com/questions/53992886/org-babel-python-environment-setup][org-babel python environment setup]]
 
-Anche sulla base di [[https://justin.abrah.ms/dotfiles/emacs.html][alcune literate conf di Emacs]], pare che l'opzione più quotata sia utilizzare un pacchetto Emacs che fa da tramite, [[https://github.com/jorgenschaefer/pyvenv][pyvenv]].
+# Anche sulla base di [[https://justin.abrah.ms/dotfiles/emacs.html][alcune literate conf di Emacs]], pare che l'opzione più quotata sia utilizzare un pacchetto Emacs che fa da tramite, [[https://github.com/jorgenschaefer/pyvenv][pyvenv]].
+
+The more appreciated approach looks like the one with =pyvenv=.
 
 #+begin_quote
 The main entry points are pyvenv-activate, which queries the user for a virtual environment directory to activate, and pyvenv-workon, which queries for a virtual environment in $WORKON_HOME (from virtualenvwrapper.sh).
 #+end_quote
 
-Per installarlo classicamente, aggiungere questo ad =init.el=:
+# Per installarlo classicamente, aggiungere questo ad =init.el=:
+
+To install =pyvenv= on vanilla Emacs, add this to =init.el=:
 
 #+begin_src emacs-lisp
 (use-package pyvenv
@@ -104,10 +131,15 @@ Per installarlo classicamente, aggiungere questo ad =init.el=:
   (pyvenv-mode t)
 #+end_src
 
-Io, invece, installerò attraverso la mia literate configuration su Doom Emacs.
+# Io, invece, installerò attraverso la mia literate configuration su Doom Emacs.
 
-E se volessimo selezionare un interpreter in particolare?
-[[https://blog.fredrikmeyer.net/2020/08/26/emacs-python-venv.html][Fredrik Meyer sul suo blog offre una soluzione]]:
+I, on the other side, am a Doom Emacs user, so I will add this package to my literate configuration.
+
+# E se volessimo selezionare un interpreter in particolare?
+# [[https://blog.fredrikmeyer.net/2020/08/26/emacs-python-venv.html][Fredrik Meyer sul suo blog offre una soluzione]]:
+
+And what if we wanted to select a specific interpreter?
+[[https://blog.fredrikmeyer.net/2020/08/26/emacs-python-venv.html][Fredrik Meyer posted about this on his blog:]]
 
 #+begin_src emacs-lisp
 ;; Set correct Python interpreter
@@ -121,7 +153,9 @@ E se volessimo selezionare un interpreter in particolare?
 #+end_src
 
 ** Virtualenv ed Emacs/Org-mode
-Org-mode aggiunge un ulteriore layer che ci complica un pochino le cose.
+# Org-mode aggiunge un ulteriore layer che ci complica un pochino le cose.
+
+Org-mode adds another layer that makes things a little more complicated.
 
 https://emacs.stackexchange.com/questions/24267/using-org-babel-to-enable-virtualenv
 
@@ -130,7 +164,9 @@ https://emacs.stackexchange.com/questions/24267/using-org-babel-to-enable-virtua
 (pyvenv-activate "~/Projects/my-org-resume/cv-venv")
 #+END_SRC
 
-Verifichiamo che sia stato attivato (result is silenced, look at the minibuffer).
+# Verifichiamo che sia stato attivato (result is silenced, look at the minibuffer).
+
+Let's verify that the venv was activated (result is silenced, look at the minibuffer).
 
 #+BEGIN_SRC sh :session cv-venv :results silent
 echo $VIRTUAL_ENV
@@ -142,11 +178,16 @@ import sys
 print('\n'.join(sys.path))
 #+END_SRC
 
-Vediamo se l'importazione dei nuovi pacchetti è riuscita:
+** Try import
+# Vediamo se l'importazione dei nuovi pacchetti è riuscita:
+
+Well, now let's see if the package importing is gone as expected:
+
 #+begin_src python :results output :session cv-venv
 try:
     import jinja2
     import babel
+    import json
     print("succeded")
 except:
     print("failed")
@@ -155,7 +196,9 @@ except:
 #+RESULTS:
 : succeded
 
-Bene, ora possiamo procedere.
+# Bene, ora possiamo procedere.
+
+Cool, now we can go ahead.
 
 * Jinja environment
 [[https://jinja.palletsprojects.com/en/3.1.x/api/#basics][Dalla documentazione di Jinja2]]:
@@ -199,13 +242,15 @@ Using a template loader rather than passing strings to Template or Environment.f
 
 * Data
 ** Personal Info
-Usiamo "context" come nome per il nostro dizionario ([[https://realpython.com/primer-on-jinja-templating/][è una convenzione]]):
+# Usiamo "context" come nome per il nostro dizionario ([[https://realpython.com/primer-on-jinja-templating/][è una convenzione]]):
 
-#+begin_quote
+#+begin_comment
 Note: Using context as a name for the collection that stores the variables for a template is a convention. That said, you can name the dictionary differently if you prefer.
-#+end_quote
+#+end_comment
 
-Intendiamo ottenere un dizionario di questo genere:
+# Intendiamo ottenere un dizionario di questo genere:
+
+We want something like this, a Python dictionary:
 
 #+begin_src python :session cv-venv
 basics = {
@@ -216,16 +261,23 @@ basics = {
 }
 #+end_src
 
-Potremmo scrivere i dati direttamente nel dizionario e far comunicare i blocchi, ma poi dipenderemmo dall'esecuzione del codice in sequenza per passare i dati da un blocco all'altro.
+# Potremmo scrivere i dati direttamente nel dizionario e far comunicare i blocchi, ma poi dipenderemmo dall'esecuzione del codice in sequenza per passare i dati da un blocco all'altro.
 
-È più comodo passare i dati attraverso le variabili org-babel, quindi generare i dati a partire da una tabella in org-mode. Inoltre, è anche più facile da manipolare.
-Possiamo inserire le stringhe tra virgolette o senza, non fa differenza.
+We could write directly the data in the dict and make all blocks communicate together, but then we would depend from executing everything in sequence just to maintain the variables all in the same place.
 
-#+begin_quote
+# È più comodo passare i dati attraverso le variabili org-babel, quindi generare i dati a partire da una tabella in org-mode. Inoltre, è anche più facile da manipolare.
+# Possiamo inserire le stringhe tra virgolette o senza, non fa differenza.
+
+It's more flexible passing the data through the org-babel variables. This way, we can obtain the data from org tables too.
+
+
+#+begin_comment
 ATTENZIONE!
 
 La tabella qui sotto è quella che va modificata. Il dizionario poco sopra è solo a titolo d'esempio.
-#+end_quote
+#+end_comment
+
+We will got the data for the CV's header from this particular table.
 
 #+name: personalinfo-table
 | "name"     | "Giovanni Crisalfi"                |
@@ -240,7 +292,8 @@ La tabella qui sotto è quella che va modificata. Il dizionario poco sopra è so
 | "dob"      | "27 Dicembre 1995"                 |
 | "driving"  | "Patente B"                        |
 
-La tabella mi produce una lista di righe. Per ogni riga troviamo una lista degli elementi nella colonna indicata. Possiamo convertirla in dizionario python in una seconda fase, così:
+# La tabella mi produce una lista di righe. Per ogni riga troviamo una lista degli elementi nella colonna indicata. Possiamo convertirla in dizionario python in una seconda fase, così:
+The table returns a list of rows. For every row we have a list of elements in a specific column. We can convert this 2D array in a python dictionary later, like this:
 
 #+begin_src python :results output :var table=personalinfo-table
 # Convert to dictionary
@@ -254,17 +307,28 @@ print(basics)
 #+RESULTS:
 : {'name': 'Giovanni Crisalfi', 'photo': 'propic-ciliegio.jpg', 'tagline': 'Studente', 'homepage': 'www.zwitterio.it', 'email': 'giovanni.crisalfi@protonmail.com', 'phone': '+39 3331604917', 'location': 'Caltagirone, CT', 'github': 'gicrisf', 'twitter': 'gicrisf', 'dob': '27 Dicembre 1995', 'driving': 'Patente B'}
 
-Il problema di questa soluzione è che non si adatta alle fasi successive, in cui le relazioni sono meno tabulabili, per esempio quando tocca occuparsi dei progetti, le esperienze lavorative.
-E allora la cosa più ragionevole sembra quella di scrivere:
+The problem comes when the data are less prone to be structured in a table. Look at the projects, for example, or the work experiences.
+# Il problema di questa soluzione è che non si adatta alle fasi successive, in cui le relazioni sono meno tabulabili, per esempio quando tocca occuparsi dei progetti, le esperienze lavorative.
+
+# E allora la cosa più ragionevole sembra quella di scrivere:
+So, the best thing to do now could be write data as:
 - JSON/Python dict
-- Alist/Plist in Emacs-lisp
+- Alist/Plist (emacs-lisp)
 
-Cioè delle strutture più flessibili.
+Yeah, those are flexible without any doubt.
+# Cioè delle strutture più flessibili.
 
-Credo che la cosa più conveniente sia continuare a lavorare in Python, quindi coi python dictionaries, ma passando i dati da un blocco all'altro come stringhe JSON.
-In questo modo evitiamo di fare casini durante i trasferimenti, creiamo un sistema che potrebbe potenzialmente essere gestito fuori da org-mode (come [[https://jsonresume.org/][JSON resume]]) ed evitiamo pure di scrivere lisp. Vorrei che questo testo sia comprensibile a quante più persone possibili e so bene che lisp tende ad intimidire qualcuno. Teniamoci sul mainstream, insomma.
+I know, I know, lisp can look like a spooky bracket maelstrom to some people, while Python is broadly used, easy to read and kinda looks like a JSON block.
+So I would say the more accessible thing to do now is to keep working in Python (with the dictionaries) and passing the data from a block to another as JSON strings.
+# Credo che la cosa più conveniente sia continuare a lavorare in Python, quindi coi python dictionaries, ma passando i dati da un blocco all'altro come stringhe JSON.
+This way, we avoid to make messes during transfers and we create a system the could potentially be transferred outside org-mode, even if I don't have idea of the reasons that could bring a person to a similar decision. What's up? Are pointing a gun against you to ditch Emacs?
+Whatever, with Python we can keep the mainstream idiom, so let's go with it.
 
-Cominciamo con l'aggiungere i dati personali dalla tabella qui sopra.
+# In questo modo evitiamo di fare casini durante i trasferimenti, creiamo un sistema che potrebbe potenzialmente essere gestito fuori da org-mode (come [[https://jsonresume.org/][JSON resume]]) ed evitiamo pure di scrivere lisp. Vorrei che questo testo sia comprensibile a quante più persone possibili e so bene che lisp tende ad intimidire qualcuno. Teniamoci sul mainstream, insomma.
+
+# Cominciamo con l'aggiungere i dati personali dalla tabella qui sopra.
+
+Let's start adding up data from the table up here.
 
 #+name: personalinfo-json
 #+begin_src python :sessions cv-venv :results output :var basics_table=personalinfo-table
@@ -282,10 +346,14 @@ print(json.dumps(basics))
 # Il problema di questo metodo è che rende l'assemblaggio del JSON un po' noioso ed inutilmente sequenziale. Sarebbe assai più comodo se organizzassimo un dizionario python senza passare da JSON e poi facessimo un dump finale in caso di necessità.
 # La migliore strategia che mi viene in mente per lavorare in python e ridurre questa intricata filatura di stringhe (e sempre evitando l'esecuzione di un blocco unico sul modello dei Jupyter Notebooks) è fare uso della sintassi noweb ed integrare nello stesso blocco sia il dato che la funzione che lo esporta.
 
-Cosa ce ne facciamo di questo risultato?
-Aspettiamo di arrivare alla fine ed integriamo tutti i dizionari in un unico dizionario onnicomprensivo che faccia poi da contesto per la generazione in Jinja2.
-L'importazione avverrà così, convertendo ogni JSON parziale in un dizionario python che sarà assegnato a una variabile, la quale potrà facilmente essere inclusa in un altro dizionario.
-In questo modo, ogni cambiamento sarà modulare e non richiederà l'intervento su tutti i blocchi di volta in volta.
+# Cosa ce ne facciamo di questo risultato?
+What should we do of this result?
+
+# Aspettiamo di arrivare alla fine ed integriamo tutti i dizionari in un unico dizionario onnicomprensivo che faccia poi da contesto per la generazione in Jinja2.
+That's what's gonna happen: we're about to convert every table or python dictionary in a JSON string, then assigning it to a variable which will be parsed and loaded as dictionary in other blocks.
+Acting this way, every block will be independent, the data complex will be modular and we don't have to run every block for verifiyng the results from a single edit, but we will just check the single block of interest.
+# L'importazione avverrà così, convertendo ogni JSON parziale in un dizionario python che sarà assegnato a una variabile, la quale potrà facilmente essere inclusa in un altro dizionario.
+# In questo modo, ogni cambiamento sarà modulare e non richiederà l'intervento su tutti i blocchi di volta in volta.
 
 #+begin_src python :results output :noweb no-export eval
 import json
@@ -301,14 +369,18 @@ print(imported)
 #+RESULTS:
 : {'name': 'Giovanni Crisalfi', 'photo': 'propic-ciliegio.jpg', 'tagline': 'Studente', 'homepage': 'www.zwitterio.it', 'email': 'giovanni.crisalfi@protonmail.com', 'phone': '+39 3331604917', 'location': 'Caltagirone, CT', 'github': 'gicrisf', 'twitter': 'gicrisf', 'dob': '27 Dicembre 1995', 'driving': 'Patente B'}
 
-Questo metodo consente anche di importare delle semplici stringhe con maggiore facilità, come vedremo coi "personal statement".
-Purtroppo, c'è un limite alla memoria in stack che possiamo pretendere noweb usi per conservare le stringhe generate, quindi in base alla situazione potremmo ottenere questo errore:
+# Questo metodo consente anche di importare delle semplici stringhe con maggiore facilità, come vedremo coi "personal statement".
+# Purtroppo, c'è un limite alla memoria in stack che possiamo pretendere noweb usi per conservare le stringhe generate, quindi in base alla situazione potremmo ottenere questo errore:
+
+Let's keep in mind that there's a limit to the stack memory we can expect noweb can use to manage the string generation, so, depending on the situation, we could get this error:
 
 #+begin_quote
 rx--translate-**: Lisp nesting exceeds ‘max-lisp-eval-depth’
 #+end_quote
 
-Bisogna evitare un nesting eccessivo, ma questo torna utile anche per mantenere il codice pulito.
+# Bisogna evitare un nesting eccessivo, ma questo torna utile anche per mantenere il codice pulito.
+
+However, this can be seen as an useful sign, because it's always better to avoid an excessive nesting, so that's a good alert sign that remember us to clean the code and keep it simple.
 
 ** Personal Statements
 *** IT
@@ -326,7 +398,8 @@ Medicinal chemistry student at Unibo • Into spectroscopy and radicals • Linu
 #+end_src
 
 ** Projects
-In questo blocco è possibile inserire o rimuovere i progetti che vogliamo mostrare nell'esportato.
+# In questo blocco è possibile inserire o rimuovere i progetti che vogliamo mostrare nell'esportato.
+Here we can insert or remove the project that we want to show in the exported CV.
 
 #+name: projects-json
 #+begin_src python :session cv-venv :results output :noweb no-export eval :var esrafel=esrafel-project() :var zhuia=zhuia-project() :var gotosi=gotosi-project() :var unsplash=unsplash-project
@@ -431,22 +504,36 @@ print(json.dumps(unsplash))
 #+RESULTS: unsplash-project
 : {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}
 
-** Seminari
-#+name: seminari-json
-#+begin_src python :session cv-venv :results output :noweb no-export eval :var festival_scienza_medica=festival-scienza-medica-event() :var sitox=sitox-event :var chemistry_world_driving=chemistry-world-driving-event() :var chemistry_world_accelerating=chemistry-world-accelerating-event()
-seminari = [
+** Seminars
+#+name: seminars-json
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var festival_scienza_medica=festival-scienza-medica-event() :var sitox=sitox-event :var chemistry_world_driving=chemistry-world-driving-event() :var chemistry_world_accelerating=chemistry-world-accelerating-event() :var drug_targeting=drug-targeting() :var molecular_machines=molecular-machines-days() :var da_scienziati_a_comunicatori=da-scienziati-a-comunicatori()
+s = [
     festival_scienza_medica,
     sitox,
     chemistry_world_driving,
     chemistry_world_accelerating,
+    # da_scienziati_a_comunicatori,
+    # molecular_machines,
+    # drug_targeting,
 ]
 
-seminari = [json.loads(x) for x in seminari]
-print(json.dumps(seminari))
+s = [json.loads(x) for x in s]
+print(json.dumps(s))
 #+end_src
 
-#+RESULTS: seminari-json
+#+RESULTS: seminars-json
 : [{"name": "Festival della Scienza Medica", "where": "Palazzo Re Enzo - piazza Nettuno 1 - Bologna", "when": "Anni: 2016 - 2017 - 2018 - 2019"}, {"name": "18\u00b0 Congresso Nazionale Sitox", "where": "Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna", "when": "10 Apr. 2018 - 13 Apr. 2018"}, {"name": "Driving the development of bio-based polymers with molecular simulation", "where": "Chemistry World Webinar", "when": "13 Apr. 2022"}, {"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}]
+
+*** Template
+#+begin_src python :session cv-venv :results output
+t = {
+    "name": "",
+    "where": "",
+    "when": "",
+}
+
+print(json.dumps(t))
+#+end_src
 
 *** Festival della scienza medica
 #+name: festival-scienza-medica-event
@@ -506,6 +593,51 @@ print(json.dumps(chemistry_world_accelerating))
 
 #+RESULTS: chemistry-world-accelerating-event
 : {"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}
+
+*** Seminari comunicazione
+#+name: da-scienziati-a-comunicatori
+#+begin_src python :session cv-venv :results output
+scicomm = {
+    "name": "Da scienziati a comunicatori scientifici: il ruolo di comunicazione della scienza nel rapporto tra scienza e società",
+    "where": "Via Irnerio 48, Bologna - Aula B di Anatomia",
+    "when": "3 Mar. 2017 - 28 Apr. 2017",
+}
+
+print(json.dumps(scicomm))
+#+end_src
+
+#+RESULTS: da-scienziati-a-comunicatori
+: {"name": "Da scienziati a comunicatori scientifici: il ruolo di comunicazione della scienza nel rapporto tra scienza e societ\u00e0", "where": "Via Irnerio 48, Bologna - Aula B di Anatomia", "when": "3 Mar. 2017 - 28 Apr. 2017"}
+
+*** Drug targeting
+#+name: drug-targeting
+#+begin_src python :session cv-venv :results output
+t = {
+    "name": "Drug targeting: getting your compounds to cross the Rubicon",
+    "where": "Via Belmeloro 6, Bologna",
+    "when": "4 Sett. 2017",
+}
+
+print(json.dumps(t))
+#+end_src
+
+#+RESULTS: drug-targeting
+: {"name": "Drug targeting: getting your compounds to cross the Rubicon", "where": "Via Belmeloro 6, Bologna", "when": "4 Sett. 2017"}
+
+*** Molecular Machines Days
+#+name: molecular-machines-days
+#+begin_src python :session cv-venv :results output
+t = {
+    "name": "Molecular Machines Days",
+    "where": "Dipartimento di Chimica Giacomo Ciamician, Aula I",
+    "when": "21 Nov. 2018",
+}
+
+print(json.dumps(t))
+#+end_src
+
+#+RESULTS: molecular-machines-days
+: {"name": "Molecular Machines Days", "where": "Dipartimento di Chimica Giacomo Ciamician, Aula I", "when": "21 Nov. 2018"}
 
 ** Skills
 *** General
@@ -716,15 +848,18 @@ print(json.dumps(langs))
 : [{"name": "italiano", "level": 5}, {"name": "Inglese", "level": 4}, {"name": "Francese", "level": 1}]
 
 * LaTeX
-L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
+# L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
 
-#+begin_src emacs-lisp
+#+begin_comment
+emacs-lisp
 (setq org-latex-logfiles-extensions (quote ("lof" "lot" "tex~" "aux" "idx" "log" "out" "toc" "nav" "snm" "vrb" "dvi" "fdb_latexmk" "blg" "brf" "fls" "entoc" "ps" "spl" "bbl" "xmpi" "run.xml" "bcf")))
-#+end_src
+#+end_comment
 
-Per fare prima, aggiungo direttamente questa variabile alla configurazione generale di Emacs.
+# Per fare prima, aggiungo direttamente questa variabile alla configurazione generale di Emacs.
 
-Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un documento (=document=):
+# Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un documento (=document=):
+
+The final LaTeX file (as every LaTeX file) will be mad of two parts: the =head= and the =document= (which is the body with the actual text):
 
 #+begin_src latex :noweb no-export :tangle cv.tex
 <<head-latex>>
@@ -733,30 +868,37 @@ Il LaTeX finale (come tutti i LaTeX) sarà costituito da una testa (=head=) e un
 #+end_src
 
 ** Dipendenze
-Per scrivere il CV in LaTeX utilizzo il template AltaCV.
-Citando il README, questi sono i requisiti per la compilazione:
+In order to render the CV in LaTeX, I use the AltaCV template.
+# Per scrivere il CV in LaTeX utilizzo il template AltaCV.
+
+As the README say, those are the minimal requirment for the compilation:
+# Citando il README, questi sono i requisiti per la compilazione:
 
 #+begin_quote
 - pdflatex + biber + pdflatex
 - AltaCV uses fontawesome5.
 #+end_quote
 
-Prima di tentare la conversione in pdf (es. con =pdflatex=) ricorda che sono necessarie le seguenti dipendenze.
+# Prima di tentare la conversione in pdf (es. con =pdflatex=) ricorda che sono necessarie le seguenti dipendenze.
+Before you try to convert in pdf (e.g. with =pdflatex=), remember to check on those dependencies.
 
 *** Fonts
-In effetti, su AUR si trova =texlive-fonts-fontawesome=...
+# In effetti, su AUR si trova =texlive-fonts-fontawesome=...
+On AUR you can find =texlive-fonts-fontawesome=...
 
 #+begin_src bash
 yay texlive-fonts-fontawesome
 #+end_src
 
-... ma visto che ci serve anche Roboto (o un font alternativo a nostra scelta), facciamo prima ad installare il pacchetto coi font:
+# ... ma visto che ci serve anche Roboto (o un font alternativo a nostra scelta), facciamo prima ad installare il pacchetto coi font:
+... but, considering that you're going to need Roboto, Lato or other fonts to your choice, it's better to install the font package:
 
 #+begin_src bash
 sudo pacman -S texlive-fontsextra
 #+end_src
 
-Viceversa, potremmo sfruttare i font di sistema compilando con XeLaTeX o LuaLaTex:
+# Viceversa, potremmo sfruttare i font di sistema compilando con XeLaTeX o LuaLaTex:
+In alternative, you could use the system fonts by compiling with XeLaTeX or LuaLaTeX:
 
 #+begin_quote
 - Can now be compiled with pdflatex, XeLaTeX and LuaLaTeX!
@@ -940,12 +1082,14 @@ You can also use =\swithcolumn*= for "synchronising" the columns, as well as oth
 % \usepackage[style=trad-abbrv,sorting=none,sortcites=true,doi=false,url=false,giveninits=true,hyperref]{biblatex}
 #+end_src
 
-Commento via =\usepackage= perché:
+# Commento via =\usepackage= perché:
+I'm commenting out =\usepackage= because:
 #+begin_quote
 ! LaTeX Error: Option clash for package biblatex.
 #+end_quote
 
-È probabile che AltaCV già carichi =biblatex= e chee questo comando sia ridondante.
+Probably, AltaCV already loads =biblatex=, so this command can be skipped.
+# È probabile che AltaCV già carichi =biblatex= e che questo comando sia ridondante.
 
 *** Exporter
 #+name: exporter-latex
@@ -977,7 +1121,7 @@ Commento via =\usepackage= perché:
 
 \cvsection{Seminari}
 
-<<seminari-latex()>>
+<<seminars-latex()>>
 
 \switchcolumn
 
@@ -1002,7 +1146,8 @@ Commento via =\usepackage= perché:
 #+end_src
 
 *** Header
-Vogliamo ottenere un risultato del genere:
+# Vogliamo ottenere un risultato del genere:
+We want to write down something like this:
 
 #+begin_src latex
 \name{Giovanni Crisalfi}
@@ -1014,7 +1159,9 @@ Vogliamo ottenere un risultato del genere:
 }
 #+end_src
 
-Scriviamo un template:
+# Scriviamo un template:
+We write a template:
+
 #+name: personalinfo-jinja-latex
 #+begin_src latex :results output
 \name{ {{ctx.name}} }
@@ -1034,7 +1181,8 @@ Scriviamo un template:
 }
 #+end_src
 
-Intanto verifichiamo che Jinja2 stia funzionando come si deve:
+# Intanto verifichiamo che Jinja2 stia funzionando come si deve:
+In the meanwhile, let's verify that Jinja2 is working as expected:
 
 #+begin_src python :results output :var context=personalinfo-table
 import jinja2
@@ -1048,7 +1196,9 @@ print(template.render(name="World"))
 #+RESULTS:
 : Hello, World!
 
-Ora renderizziamo il primo template:
+# Ora renderizziamo il primo template:
+Now, let's render the first template:
+
 #+name: personalinfo-latex
 #+begin_src python :session cv-venv :results output latex :var templ=personalinfo-jinja-latex :var ctx=personalinfo-json()
 ctx=json.loads(ctx)
@@ -1173,8 +1323,8 @@ print(template.render(projects=projects))
 \cvtag{ VMD }
 #+end_export
 
-**** Seminari
-#+name: seminari-jinja-latex
+**** Seminars
+#+name: seminars-jinja-latex
 #+begin_src latex
 {% for seminario in seminari %}
 \cvevent{ {%- if seminario.name -%} {{seminario.name}}{%- endif -%} }{ {%- if seminario.where -%} {{seminario.where}}{%- endif -%} }{ {%- if seminario.when -%} {{seminario.when}}{%- endif -%} }{}
@@ -1185,10 +1335,11 @@ print(template.render(projects=projects))
 {% endfor %}
 #+end_src
 
-Renderizziamo tutti i progetti:
+# Renderizziamo tutti i progetti:
+Let's render every project in the list:
 
-#+name: seminari-latex
-#+begin_src python :session cv-venv :results output latex :var templ=seminari-jinja-latex :var ctx=seminari-json()
+#+name: seminars-latex
+#+begin_src python :session cv-venv :results output latex :var templ=seminars-jinja-latex :var ctx=seminars-json()
 seminari=json.loads(ctx)
 env = jinja2.Environment()
 env.trim_blocks = True
@@ -1213,7 +1364,8 @@ print(template.render(seminari=seminari))
 
 *** Column 2
 **** Skills
-Stampa le keywords ed aggiungi un leggero spazio verticale ogni tre tag.
+# Stampa le keywords ed aggiungi un leggero spazio verticale ogni tre tag.
+Print the keywords and add a light vertical space every three tag or when the characters of the single tag exceed 14:
 
 #+name: skills-jinja-latex
 #+begin_src latex
@@ -1233,7 +1385,8 @@ Stampa le keywords ed aggiungi un leggero spazio verticale ogni tre tag.
 {% endfor %}
 #+end_src
 
-Renderizziamo:
+# Renderizziamo:
+Rendering:
 
 #+name: skills-latex
 #+begin_src python :session cv-venv :results output latex :var templ=skills-jinja-latex :var ctx=general-skills-json()
@@ -1273,7 +1426,8 @@ print(template.render(skills=skills))
 {% endfor %}
 #+end_src
 
-Renderizziamo:
+# Renderizziamo:
+Rendering:
 
 #+name: exps-latex
 #+begin_src python :session cv-venv :results output latex :var templ=exps-jinja-latex :var ctx=exps-json()
@@ -1295,7 +1449,7 @@ print(template.render(exps=exps))
 #+end_export
 
 **** Education
-TODO manage più commenti (comments)
+TODO manage more comments.
 
 #+name: edu-jinja-latex
 #+begin_src latex
@@ -1311,7 +1465,8 @@ TODO manage più commenti (comments)
 {% endfor %}
 #+end_src
 
-Renderizziamo:
+# Renderizziamo:
+Rendering:
 
 #+name: edu-latex
 #+begin_src python :session cv-venv :results output latex :var templ=edu-jinja-latex :var ctx=edu-json()
@@ -1350,7 +1505,8 @@ print(template.render(edu=edu))
 {% endfor %}
 #+end_src
 
-Renderizziamo:
+# Renderizziamo:
+Rendering:
 
 #+name: langs-latex
 #+begin_src python :session cv-venv :results output latex :var templ=langs-jinja-latex :var ctx=langs-json()
@@ -1372,8 +1528,11 @@ print(template.render(langs=langs))
 #+end_export
 
 * TODO Markdown
-Qui potrei usare ox-hugo o scrivere direttamente un template con Jinja.
+# Qui potrei usare ox-hugo o scrivere direttamente un template con Jinja.
+Here I could use ox-hugo or writing directly a Jinja template.
 
 * TODO JSON
-Posso esportare tutti i dati con un =json.dumps= e fare il tangling.
-Posso anche adattare i dati allo schema JSON di JSON Resume.
+I could export every data with a =json.dumps= and adapt the schema to the JSON Resume one.
+I don't need this by now.
+# Posso esportare tutti i dati con un =json.dumps= e fare il tangling.
+# Posso anche adattare i dati allo schema JSON di JSON Resume.
