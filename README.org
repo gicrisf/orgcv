@@ -19,6 +19,7 @@ Take a look at my rendered PDFs!
 - [X] Clickable links with 'hyperref' LaTeX package;
 - [X] Support for XeLaTeX and LuaLaTeX;
 - [X] Exports to alternative versions of the CV;
+- [X] Scripting the venv generation;
 
 ** TODOs
 - [ ] Python decorators to reduce boilerplate;
@@ -26,7 +27,6 @@ Take a look at my rendered PDFs!
 - [ ] External Python module to minimize redundancy;
 - [ ] JSON Resume conversion;
 - [ ] Markdown template;
-- [ ] Scripting the venv generation;
 
 ** Donate
 Why don't you help me keeping myself awake buying me a coffee?

@@ -1,12 +1,21 @@
-#+title: Literate CV
+#+title: Org CV
 #+author: Giovanni Crisalfi
 #+date: [2022-08-31 mer]
 #+startup: overview
 
+# How to export this file?
+# =org-export-dispatch= for some reason ignores the =latex= blocks but exports the =tex= ones;
+# A quick solution is to replace =latex= with =tex= when we want to export
+# (with vim substite command, use this regex: =:%s/\s\<latex\C//\>/tex/g=
+# Then uncomment the line below to disable the block evaluation (it will be faster too)
+# #+PROPERTY: header-args :eval never-export
+# Finally, undo the command to restore the =latex= keyword in the src blocks
+# Enjoy the exported files
+
 #+hugo_base_dir: ~/zwitterio-it/
-#+hugo_section: literate-cv
+#+hugo_section: orgcv
 #+hugo_auto_set_lastmod: t
-#+export_file_name: index
+#+export_file_name: index.en.md
 
 #+MACRO: more @@html:<!-- more -->@@
 
@@ -21,24 +30,30 @@ Moreover, it's an example of literate programming in org-mode.
 * Quickstart
 Just run those blocks to set up the Python environment and importing the libraries, then you can tangle the files you need.
 
-Activate your pre-setted venv:
+Is this your first time here? You need to create a virtual environment. If you trust me, you can launch the scripted installation from the next block:
+#+begin_src bash :noweb no-export :results silent
+python venvomatic.py
+#+end_src
+
+Now that you have perfectly working virtual environment, activate it:
 #+begin_src emacs-lisp :noweb no-export :results silent
 <<venv-activate>>
 #+end_src
 
-Import the dependencies:
+Import the dependencies in this session:
 #+begin_src python :noweb no-export :results output silent
 <<trying-importing-python-libs>>
 #+end_src
 
-Read the results in the minibuffer.
+Read the results in the minibuffer. If it's a success, you're good to go.
+If you're interested in what this is about (or you got some errors), just read the "Python environment" section, that explains everything step by step.
 
 * Intro
 I'm writing this because I was using another org-mode method to manage my CV which is too interlaced with the LaTeX syntax and relies too much on org macros.
 Although that method was effective for managing a single CV in LaTeX and had a lot of advantages, I wanted something more solid and modular.
 Particurarly, I wanted to decouple the data insertion and the markup writing, both in LaTeX or in other languages like HTML/Markdown and so on.
 So, I have three section to write down:
-- This introduction, with some explaining about the environment we're going to use;
+- This introduction, with some explainings about the environment we're going to use;
 - The section that will collect the data;
 - The section that will collect the templates for rendering the data and exporting them to other formats.
 
@@ -82,15 +97,12 @@ Considering all this introduction, I think the templating engine is the right ch
 
 * Python environment
 # Non ci resta che costruire un ambiente Python adatto.
-
 Now, we just have to build the right Python environment.
 
 #+begin_comment
-#+begin_quote
 ATTENZIONE!
 
 Per i più disattenti, il CV non può essere renderizzato senza alcune piccole dipendenze Python.
-#+end_quote
 #+end_comment
 
 #+begin_quote
@@ -126,9 +138,11 @@ $ pip install Babel
 
 As previously said, I prefer using a virtual environment, but I leave the basic commands up her for anyone else who could prefer them.
 
-** Virtualenv
+** Create a virtualenv
 # In condizioni normali, questo è quello che faremmo per creare un virtual environment (chiamato =venv=).
 Outside Emacs, that's what we usually would do to create a virtual environment (or a =venv=).
+
+First of all, go to your preferred directory (e.g. =~/.venvs/cv-venv=); then,
 
 #+begin_src bash
 $ mkdir myproject
@@ -141,17 +155,143 @@ Installing distribute............done.
 # Questo per attivarlo:
 This command to activate:
 #+begin_src bash
-$ . venv/bin/activate
+$ source venv/bin/activate
 #+end_src
+
+Why =source=? [[https://groups.google.com/g/python-virtualenv/c/FfipsFBqvq4/m/gcEujM43YQ4J][Because]].
+
+#+begin_quote
+The activate script actually modifies your shell environment, so you can't use it like a normal command.
+#+end_quote
 
 # Anziché attivarlo, limitiamoci a creare un virtual environment inequivocabilmente utile alla produzione del CV e lasciamolo in attesa.
-In this case, instead of activating it, we should just create the virtual environment and make it rest, waiting for us to evoke it.
+# In this case, instead of activating it, we should just create the virtual environment and make it rest, waiting for us to evoke it.
+
+Now, install the requirements like we did before:
 
 #+begin_src bash
-$ virtualenv cv-venv
+$ pip install Jinja2
+$ pip install Babel
 #+end_src
 
-# TODO: scriptare all'interno di questo file la creazione dell'environment.
+# If you want to go faster, install them with a single command from the =requirements.txt= file in this repo:
+
+#+name: python-requirements
+#+begin_comment txt :tangle requirements.txt
+Jinja2
+Babel
+#+end_comment
+
+# Install easily with pip:
+#+begin_comment bash
+$ pip install ./requirements.txt
+#+end_comment
+
+If you want to go even faster, I scripted the process in the next block to obtain the same result.
+
+** Scripting the virtualenv generation
+If you don't like to do stuff the good ol' way and you want me to do all that automatically, there's a script for you.
+# we will need a pretty package before.
+# In Arch-based systems:
+
+#+begin_comment
+(src)
+$ sudo pacman -S python-pipenv
+#+end_comment
+
+# [[https://pipenv.pypa.io/en/latest/][Look here for installing in other systems]].
+
+# TODO Use pipenv + Pipfile
+# We could install everything with subprocess, but it would be harder to manage the permission errors that are likely to happen.
+
+You can launch the =venvomatic.py= script both from the terminal emulator (you find the file in the repo directory), or directly executing this block from here. If you don't like the presets, change the directories for your venv first. Otherwise, pass over and execute the block directly.
+
+#+name: parent-directory-venv
+#+begin_src python
+# Relative to the home folder
+parent_directory = ".venvs"
+return(parent_directory)
+#+end_src
+
+The subdiherer of our virtual environment:
+#+name: new-directory-venv
+#+begin_src python
+# Relative to the parent folder
+new_venv_directory = "cv-venv"
+return(new_venv_directory)
+#+end_src
+
+The actual script:
+# Tangled to
+# :tangle venvomatic.py
+#+name: venv-o-matic
+#+begin_src python :results output :var parent_dir=parent-directory-venv() :var new_dir=new-directory-venv()
+import virtualenv
+import os
+import subprocess
+
+# Where we want to put our virtual environment
+if parent_dir:
+    venvs_dir = os.path.join(os.path.expanduser("~"), parent_dir)
+else:
+    venvs_dir = os.path.join(os.path.expanduser("~"), ".venvs")
+
+# Make the parent directory if it doesn't exists
+if not os.path.exists(venvs_dir):
+    os.makedirs(venvs_dir)
+    print("{} not found; made it.".format(venvs_dir))
+
+# Choose a specific directory to be made
+if new_dir:
+    cv_venv_dir = os.path.join(venvs_dir, new_dir)
+else:
+    cv_venv_dir = os.path.join(venvs_dir, "cv-venv")
+
+# Make the parent directory if it doesn't exists
+if not os.path.exists(cv_venv_dir):
+    os.makedirs(cv_venv_dir)
+    print("{} not found; made it.".format(cv_venv_dir))
+
+# Create the new venv
+# virtualenv.create_environment(cv_venv_dir) # deprecated
+print("creating the new venv...")
+subprocess.run(["python", "-m", "venv", cv_venv_dir]) # use venv instead
+print("done.")
+
+# Find the new executable
+py_binary = os.path.join(cv_venv_dir, "bin")
+
+os.chdir(cv_venv_dir)
+
+# Install requirements
+print("installing requirements...")
+subprocess.Popen(["./python", "-m", "pip", "install", "-U", "Jinja2", "Babel"], cwd=py_binary)
+print("done.")
+print("now exiting.")
+#+end_src
+
+#+RESULTS: venv-o-matic
+#+begin_example
+/home/cromo/.venvs not found; made it.
+/home/cromo/.venvs/cv-venv not found; made it.
+creating the new venv...
+done.
+installing requirements...
+done.
+now exiting.
+Collecting Jinja2
+  Using cached Jinja2-3.1.2-py3-none-any.whl (133 kB)
+Collecting Babel
+  Using cached Babel-2.10.3-py3-none-any.whl (9.5 MB)
+Collecting MarkupSafe>=2.0
+  Using cached MarkupSafe-2.1.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (25 kB)
+Collecting pytz>=2015.7
+  Using cached pytz-2022.2.1-py2.py3-none-any.whl (500 kB)
+Installing collected packages: pytz, MarkupSafe, Babel, Jinja2
+Successfully installed Babel-2.10.3 Jinja2-3.1.2 MarkupSafe-2.1.1 pytz-2022.2.1
+#+end_example
+
+The output you should see something like this.
 
 ** Virtualenv inside Emacs
 In Emacs, things get a little more convoluted.
@@ -209,10 +349,21 @@ Org-mode adds another layer that makes things a little more complicated.
 
 https://emacs.stackexchange.com/questions/24267/using-org-babel-to-enable-virtualenv
 
+We need the full path of our venv:
+#+name: full-path-venv
+#+begin_src python :var parent_dir=parent-directory-venv() :var new_dir=new-directory-venv()
+import os
+full_path = os.path.join(os.path.expanduser("~"), parent_dir, new_dir)
+return(full_path)
+#+end_src
+
+#+RESULTS: full-path-venv
+: /home/cromo/.venvs/cv-venv
+
 #+name: venv-activate
-#+BEGIN_SRC elisp :session cv-venv :results silent
+#+BEGIN_SRC elisp :session cv-venv :results silent :var path=full-path-venv()
 ;; doesn't return any value or output, so I'm silencing this block
-(pyvenv-activate "~/Projects/my-org-resume/cv-venv")
+(pyvenv-activate path)
 #+END_SRC
 
 # Verifichiamo che sia stato attivato (result is silenced, look at the minibuffer).
@@ -247,11 +398,10 @@ except:
     print("failed")
 #+end_src
 
-#+RESULTS:
+#+RESULTS: trying-importing-python-libs
 : succeded
 
 # Bene, ora possiamo procedere.
-
 Cool, now we can go ahead.
 
 * Jinja environment
