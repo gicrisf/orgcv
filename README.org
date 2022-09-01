@@ -3,7 +3,9 @@
 
 My /Curriculum Vitae/, written in Org-mode and powered by LaTeX + Python/Jinja2.
 
-[[./cv.pdf][Look at my rendered PDF!]]
+Take a look at my rendered PDFs!
+- [[./cv.pdf][General (multipurpose)]]
+- [[./cv-web.pdf][Web dev.]]
 
 ** Features
 - [X] Documented through the main file (=cv.org= is a literate program);

@@ -943,7 +943,7 @@ The final LaTeX file (as every LaTeX file) will be made with two consequential p
 This block tangles the general version:
 
 # :tangle cv.tex
-#+begin_src latex :noweb no-export :tangle cv.tex
+#+begin_src latex :noweb no-export :tangle cv-general-unstable.tex
 <<head-latex>>
 
 <<document-general-latex>>
@@ -951,7 +951,7 @@ This block tangles the general version:
 
 This block tangles the web version:
 
-# :tangle cv-webdev.tex
+# :tangle cv-web-unstable.tex
 #+begin_src latex :noweb no-export
 <<head-latex>>
 
