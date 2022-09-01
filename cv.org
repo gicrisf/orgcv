@@ -479,8 +479,10 @@ print(json.dumps(esrafel))
 #+RESULTS: esrafel-project
 : {"name": "Esrafel", "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods", "when": "Marzo 2020 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/esrafel", "href": "https://github.com/gicrisf/esrafel"}, "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]}
 
-**** TODO Decoratore
-Per non scrivere sempre =print(json.dumps(X))=, potrei scrivere un decoratore.
+**** TODO Decorator
+# Per non scrivere sempre =print(json.dumps(X))=, potrei scrivere un decoratore.
+To avoid writing =print(json.dumps(X))= everytime, I could write a decorator.
+Before doing this, I was thinking about making a =utils.py= module to tangle from this file and importing it with the main libraries like json, jinja2 and Babel.
 
 *** Zhuia
 #+name: zhuia-project
@@ -1305,7 +1307,8 @@ Mi interesso di epistemologia, cinema, fumetti e altre lettere.
 {% endfor %}
 #+end_src
 
-Renderizziamo tutti i progetti:
+# Renderizziamo tutti i progetti:
+Rendering every project:
 
 #+name: projects-latex
 #+begin_src python :session cv-venv :results output latex :var templ=projects-jinja-latex :var ctx=projects-json()
