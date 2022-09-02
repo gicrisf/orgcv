@@ -6,7 +6,7 @@
 # How to export this file?
 # =org-export-dispatch= for some reason ignores the =latex= blocks but exports the =tex= ones;
 # A quick solution is to replace =latex= with =tex= when we want to export
-# (with vim substite command, use this regex: =:%s/\s\<latex\C//\>/tex/g=
+# (with vim substitute command, use this regex: =%s/\s\<latex\C/ tex/g=
 # Then uncomment the line below to disable the block evaluation (it will be faster too)
 # #+PROPERTY: header-args :eval never-export
 # Finally, undo the command to restore the =latex= keyword in the src blocks
@@ -31,18 +31,23 @@ Moreover, it's an example of literate programming in org-mode.
 Just run those blocks to set up the Python environment and importing the libraries, then you can tangle the files you need.
 
 Is this your first time here? You need to create a virtual environment. If you trust me, you can launch the scripted installation from the next block:
-#+begin_src bash :noweb no-export :results silent
+#+begin_src bash :session cv-venv :noweb no-export :results output silent
 python venvomatic.py
 #+end_src
 
 Now that you have perfectly working virtual environment, activate it:
-#+begin_src emacs-lisp :noweb no-export :results silent
-<<venv-activate>>
+#+begin_src emacs-lisp :noweb no-export :session cv-venv :results output silent :var path=full-path-venv()
+(pyvenv-activate path)
 #+end_src
 
 Import the dependencies in this session:
-#+begin_src python :noweb no-export :results output silent
+#+begin_src python :noweb no-export :session cv-venv :results output silent
 <<trying-importing-python-libs>>
+#+end_src
+
+Create an environment for Jinja2:
+#+begin_src python :noweb no-export :session cv-venv :results output silent
+<<create-jinja-env>>
 #+end_src
 
 Read the results in the minibuffer. If it's a success, you're good to go.
@@ -291,7 +296,7 @@ Installing collected packages: pytz, MarkupSafe, Babel, Jinja2
 Successfully installed Babel-2.10.3 Jinja2-3.1.2 MarkupSafe-2.1.1 pytz-2022.2.1
 #+end_example
 
-The output you should see something like this.
+# The output you should see something like this.
 
 ** Virtualenv inside Emacs
 In Emacs, things get a little more convoluted.
@@ -394,12 +399,9 @@ try:
     import babel
     import json
     print("succeded")
-except:
-    print("failed")
+except Exception as e:
+    print(e)
 #+end_src
-
-#+RESULTS: trying-importing-python-libs
-: succeded
 
 # Bene, ora possiamo procedere.
 Cool, now we can go ahead.
@@ -412,15 +414,20 @@ Cool, now we can go ahead.
 This will create a template environment with a loader that looks up templates in the templates folder inside the yourapp Python package (or next to the yourapp.py Python module). It also enables autoescaping for HTML files. This loader only requires that yourapp is importable, it figures out the absolute path to the folder for you.
 #+end_quote
 
-#+begin_src python :session cv-venv
-from jinja2 import Environment, PackageLoader, select_autoescape
-env = Environment(
-    loader=PackageLoader("orgcv"),
-    autoescape=select_autoescape()
-)
+#+name: create-jinja-env
+#+begin_src python :session cv-venv :results output
+try:
+    import jinja2
+    env = jinja2.Environment()
+    env.trim_blocks = True
+    env.lstrim_blocks = True
+    print("jinja env ready")
+except Exception as e:
+    print(e)
 #+end_src
 
-#+RESULTS:
+#+RESULTS: create-jinja-env
+: jinja env ready
 
 #+begin_quote
 To load a template from this environment, call the get_template() method, which returns the loaded Template.
@@ -429,6 +436,8 @@ To load a template from this environment, call the get_template() method, which 
 #+begin_src python
 template = env.get_template("mytemplate.html")
 #+end_src
+
+#+RESULTS:
 
 # Non ho bisogno di scrivere necessariamente i template in file a parte.
 I don't have the absolute need to write templates in external files.
@@ -1497,11 +1506,8 @@ We write a template:
 # Intanto verifichiamo che Jinja2 stia funzionando come si deve:
 In the meanwhile, let's verify that Jinja2 is working as expected:
 
-#+begin_src python :results output :var context=personalinfo-table
-import jinja2
-
-environment = jinja2.Environment()
-template = environment.from_string("Hello, {{ name }}!")
+#+begin_src python :session cv-venv :results output :var context=personalinfo-table
+template = env.from_string("Hello, {{ name }}!")
 
 print(template.render(name="World"))
 #+end_src
@@ -1515,7 +1521,6 @@ Now, let's render the first template:
 #+name: personalinfo-latex
 #+begin_src python :session cv-venv :results output latex :var templ=personalinfo-jinja-latex :var ctx=personalinfo-json()
 ctx=json.loads(ctx)
-env = jinja2.Environment()
 template = env.from_string(templ)
 print(template.render(ctx=ctx))
 #+end_src
@@ -1582,16 +1587,7 @@ Rendering every project:
 
 #+name: projects-latex
 #+begin_src python :session cv-venv :results output latex :var templ=projects-jinja-latex :var ctx=projects-json()
-try:
-    import jinja2
-    import json
-except Exception as e:
-    print(e)
-
 projects=json.loads(ctx)
-env = jinja2.Environment()
-env.trim_blocks = True
-env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(projects=projects))
 #+end_src
@@ -1655,9 +1651,6 @@ Let's render every project in the list:
 #+name: seminars-latex
 #+begin_src python :session cv-venv :results output latex :var templ=seminars-jinja-latex :var ctx=seminars-json()
 seminari=json.loads(ctx)
-env = jinja2.Environment()
-env.trim_blocks = True
-env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(seminari=seminari))
 #+end_src
@@ -1716,12 +1709,24 @@ Rendering:
 #+begin_src python :session cv-venv :results output latex :var templ=skills-jinja-latex :var ctx=skills-json() :var target=cv-target
 skills=json.loads(ctx)
 skills = skills["categories"][str(target)]
-env = jinja2.Environment()
-env.trim_blocks = True
-env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(skills=skills))
 #+end_src
+
+#+RESULTS: skills-latex
+#+begin_export latex
+\cvtag { Pharmaceutical chemistry }
+
+\vspace{+.1cm}
+\cvtag { Spectroscopy }
+\cvtag { Programming }
+
+\vspace{+.1cm}
+
+\cvtag { Web dev. }
+\cvtag { Desktop dev. }
+\cvtag { Data viz. }
+#+end_export
 
 **** Experiences
 #+name: exps-jinja-latex
@@ -1742,9 +1747,6 @@ Rendering:
 #+name: exps-latex
 #+begin_src python :session cv-venv :results output latex :var templ=exps-jinja-latex :var ctx=exps-json()
 exps=json.loads(ctx)
-env = jinja2.Environment()
-env.trim_blocks = True
-env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(exps=exps))
 #+end_src
@@ -1781,9 +1783,6 @@ Rendering:
 #+name: edu-latex
 #+begin_src python :session cv-venv :results output latex :var templ=edu-jinja-latex :var ctx=edu-json()
 edu=json.loads(ctx)
-env = jinja2.Environment()
-env.trim_blocks = True
-env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(edu=edu))
 #+end_src
@@ -1821,9 +1820,6 @@ Rendering:
 #+name: langs-latex
 #+begin_src python :session cv-venv :results output latex :var templ=langs-jinja-latex :var ctx=langs-json()
 langs=json.loads(ctx)
-env = jinja2.Environment()
-env.trim_blocks = True
-env.lstrim_blocks = True
 template = env.from_string(templ)
 print(template.render(langs=langs))
 #+end_src
