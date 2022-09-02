@@ -14,6 +14,8 @@
 
 #+hugo_base_dir: ~/zwitterio-it/
 #+hugo_section: orgcv
+#+hugo_categories: projects software
+#+hugo_tags: emacs org python
 #+hugo_auto_set_lastmod: t
 #+export_file_name: index.en.md
 
@@ -1520,9 +1522,8 @@ Now, let's render the first template:
 
 #+name: personalinfo-latex
 #+begin_src python :session cv-venv :results output latex :var templ=personalinfo-jinja-latex :var ctx=personalinfo-json()
-ctx=json.loads(ctx)
 template = env.from_string(templ)
-print(template.render(ctx=ctx))
+print(template.render(ctx=json.loads(ctx)))
 #+end_src
 
 #+RESULTS: personalinfo-latex
@@ -1587,9 +1588,8 @@ Rendering every project:
 
 #+name: projects-latex
 #+begin_src python :session cv-venv :results output latex :var templ=projects-jinja-latex :var ctx=projects-json()
-projects=json.loads(ctx)
 template = env.from_string(templ)
-print(template.render(projects=projects))
+print(template.render(projects=json.loads(ctx)))
 #+end_src
 
 #+RESULTS: projects-latex
@@ -1650,9 +1650,8 @@ Let's render every project in the list:
 
 #+name: seminars-latex
 #+begin_src python :session cv-venv :results output latex :var templ=seminars-jinja-latex :var ctx=seminars-json()
-seminari=json.loads(ctx)
 template = env.from_string(templ)
-print(template.render(seminari=seminari))
+print(template.render(seminari=json.loads(ctx)))
 #+end_src
 
 #+RESULTS: seminari-latex
@@ -1746,9 +1745,8 @@ Rendering:
 
 #+name: exps-latex
 #+begin_src python :session cv-venv :results output latex :var templ=exps-jinja-latex :var ctx=exps-json()
-exps=json.loads(ctx)
 template = env.from_string(templ)
-print(template.render(exps=exps))
+print(template.render(exps=json.loads(ctx)))
 #+end_src
 
 #+RESULTS: exps-latex
@@ -1782,9 +1780,8 @@ Rendering:
 
 #+name: edu-latex
 #+begin_src python :session cv-venv :results output latex :var templ=edu-jinja-latex :var ctx=edu-json()
-edu=json.loads(ctx)
 template = env.from_string(templ)
-print(template.render(edu=edu))
+print(template.render(edu=json.loads(ctx)))
 #+end_src
 
 #+RESULTS: edu-latex
@@ -1819,9 +1816,8 @@ Rendering:
 
 #+name: langs-latex
 #+begin_src python :session cv-venv :results output latex :var templ=langs-jinja-latex :var ctx=langs-json()
-langs=json.loads(ctx)
 template = env.from_string(templ)
-print(template.render(langs=langs))
+print(template.render(langs=json.loads(ctx)))
 #+end_src
 
 #+RESULTS: langs-latex
