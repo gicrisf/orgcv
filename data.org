@@ -1,0 +1,155 @@
+#+title: CV Data
+
+* Info
+:PROPERTIES:
+:NAME: Giovanni Crisalfi
+:PHOTO: propic-ciliegio.jpg
+:TAGLINE: Studente
+:HOMEPAGE: www.zwitterio.it
+:EMAIL: giovanni.crisalfi@protonmail.com
+:PHONE: +39 3331604917
+:LOCATION: Caltagirone, CT
+:GITHUB: gicrisf
+:TWITTER: gicrisf
+:DOB: 27 Dicembre 1995
+:DRIVING: Patente B
+:END:
+
+Commento Test
+
+* Statement
+CTF, Università di Bologna. Mi sento a casa solo con una tastiera sotto le dita, le keybindings di Vim, un buffer di Emacs ed un ambiente Linux. Quando non scrivo, leggo.
+
+* Projects
+** Esrafel :rust:GTK:desktop:Spettroscopia:
+:PROPERTIES:
+:NAME: Esrafel
+:WHEN: Marzo 2020 - Marzo 2022
+:LINK_ICON: Github
+:LINK_TEXT: gicrisf/esrafel
+:LINK_HREF: https://github.com/gicrisf/esrafel
+:END:
+
+Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods
+
+** tochemfig :Chemistry:Lisp:Emacs:LaTeX:
+:PROPERTIES:
+:NAME: tochemfig
+:WHEN: Nov. 2022
+:LINK_ICON: Github
+:LINK_TEXT: gicrisf/tochemfig
+:LINK_HREF: https://github.com/gicrisf/tochemfig
+:END:
+
+Make Emacs write chemfig code from molfile or SMILES.
+
+* Seminars
+** Chemistry World, Accelerating
+:PROPERTIES:
+:NAME: Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy
+:WHEN: 24 Maggio 2022
+:WHERE: Chemistry World Webinar
+:END:
+
+# Niente qui
+
+** Da scienziati a comunicatori
+:PROPERTIES:
+:NAME: Da scienziati a comunicatori scientifici
+:WHEN: 3 Mar. 2017 - 28 Apr. 2017
+:WHERE: Via Irnerio 48, Bologna - Aula B di Anatomia
+:END:
+
+Il ruolo di comunicazione della scienza nel rapporto tra scienza e società.
+
+* Skills
+* Experiences
+** Farmacia Ospedaliera
+:PROPERTIES:
+:NAME: Tirocinio in Farmacia Ospedaliera
+:WHEN: Ottobre 2020 - Luglio 2021
+:WHERE: Ospedale Gravina di Caltagirone
+:END:
+
+** Tesi sperimentale
+:PROPERTIES:
+:NAME: Tirocinio per tesi sperimentale
+:WHEN: Ottobre 2019 - Maggio 2020
+:WHERE: Dipartimento di \"Chimica Giacomo Ciamician\" - Unibo
+:END:
+
+* Education
+** Diploma Scientifico
+:PROPERTIES:
+:NAME: Diploma Liceo Scientifico
+:WHEN: Sett. 2009 - Giugno 2014
+:WHERE: Liceo Scientifico E. Majorana - Caltagirone
+:END:
+
+** CTF
+:PROPERTIES:
+:NAME: Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche
+:WHEN: Sett. 2014 - Marzo 2023
+:WHERE: Dipartimento di Farmacia e Biotecnologie FABIT - Università di Bologna
+:END:
+
+** Summer School in Pharma Analysis
+:PROPERTIES:
+:NAME: Summer School in Pharmaceutical Analysis
+:WHEN: 18 Sett. 2017 - 20 Sett. 2017
+:WHERE: Campus di Rimini - Palazzo Ruffi-Briolini
+:END:
+
+Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies.
+
+** Winter School in DL for biodata
+:PROPERTIES:
+:NAME: Bioinformatics and Deep learning for biodata analysis
+:WHEN: February 14-27, 2023
+:WHERE: Department of Pharmacy and Biotechnology
+:END:
+
+# Descrizione
+
+** 24 CFU
+:PROPERTIES:
+:NAME: 24 CFU
+:WHEN: 29 Sett. 2021 - 29 Sett. 2022
+:WHERE: Università di Bologna
+:END:
+
+Percorso formativo nelle discipline antropo-psico-pedagogiche e nelle metodologie e tecnologie didattiche.
+
+** ONSCI
+:PROPERTIES:
+:NAME: Officina di narrazione della Scienza (ONSCI)
+:WHEN: 7-14 Sett. 2022
+:WHERE: Dipartimento di Fisica e Astronomia Unibo, Via Irnerio, Bologna
+:END:
+
+Tempi e luoghi per pensare con la scienza: nuovi linguaggi per l'educazione STEM.
+
+** TODO Chimica (Magistrale)
+:PROPERTIES:
+:NAME: Magistrale in Chimica
+:WHERE: Dipartimento di Chimica - Università di Messina
+:WHEN: Sett. 2022 - In corso
+:END:
+
+Curriculum dei nanomateriali.
+
+* Langs
+** Italiano
+:PROPERTIES:
+:LEVEL: 5
+:END:
+
+** Inglese
+:PROPERTIES:
+:LEVEL: 4
+:END:
+
+** Francese
+:PROPERTIES:
+:LEVEL: 1
+:END:

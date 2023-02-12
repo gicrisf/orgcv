@@ -39,6 +39,6 @@ os.chdir(cv_venv_dir)
 
 # Install requirements
 print("installing requirements...")
-subprocess.Popen(["./python", "-m", "pip", "install", "-U", "Jinja2", "Babel"], cwd=py_binary)
+subprocess.Popen(["./python", "-m", "pip", "install", "-U", "Jinja2", "Babel", "git+https://github.com/jlumpe/pyorg#egg=pyorg", "python-emacs"], cwd=py_binary)
 print("done.")
 print("now exiting.")

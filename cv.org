@@ -145,6 +145,8 @@ $ pip install Babel
 
 As previously said, I prefer using a virtual environment, but I leave the basic commands up her for anyone else who could prefer them.
 
+TODO install =pyorg= and =python-emacs= here.
+
 ** Create a virtualenv
 # In condizioni normali, questo è quello che faremmo per creare un virtual environment (chiamato =venv=).
 Outside Emacs, that's what we usually would do to create a virtual environment (or a =venv=).
@@ -179,6 +181,8 @@ Now, install the requirements like we did before:
 #+begin_src bash
 $ pip install Jinja2
 $ pip install Babel
+$ pip install pyorg
+$ pip install python-emacs
 #+end_src
 
 # If you want to go faster, install them with a single command from the =requirements.txt= file in this repo:
@@ -187,6 +191,8 @@ $ pip install Babel
 #+begin_comment txt :tangle requirements.txt
 Jinja2
 Babel
+pyorg
+python-emacs
 #+end_comment
 
 # Install easily with pip:
@@ -272,31 +278,10 @@ os.chdir(cv_venv_dir)
 
 # Install requirements
 print("installing requirements...")
-subprocess.Popen(["./python", "-m", "pip", "install", "-U", "Jinja2", "Babel"], cwd=py_binary)
+subprocess.Popen(["./python", "-m", "pip", "install", "-U", "Jinja2", "Babel", "git+https://github.com/jlumpe/pyorg#egg=pyorg", "python-emacs"], cwd=py_binary)
 print("done.")
 print("now exiting.")
 #+end_src
-
-#+RESULTS: venv-o-matic
-#+begin_example
-/home/cromo/.venvs not found; made it.
-/home/cromo/.venvs/cv-venv not found; made it.
-creating the new venv...
-done.
-installing requirements...
-done.
-now exiting.
-Collecting Jinja2
-  Using cached Jinja2-3.1.2-py3-none-any.whl (133 kB)
-Collecting Babel
-  Using cached Babel-2.10.3-py3-none-any.whl (9.5 MB)
-Collecting MarkupSafe>=2.0
-  Using cached MarkupSafe-2.1.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (25 kB)
-Collecting pytz>=2015.7
-  Using cached pytz-2022.2.1-py2.py3-none-any.whl (500 kB)
-Installing collected packages: pytz, MarkupSafe, Babel, Jinja2
-Successfully installed Babel-2.10.3 Jinja2-3.1.2 MarkupSafe-2.1.1 pytz-2022.2.1
-#+end_example
 
 # The output you should see something like this.
 
@@ -400,10 +385,15 @@ try:
     import jinja2
     import babel
     import json
+    import pyorg
+    # import emacs
     print("succeded")
 except Exception as e:
     print(e)
 #+end_src
+
+#+RESULTS: trying-importing-python-libs
+: succeded
 
 # Bene, ora possiamo procedere.
 Cool, now we can go ahead.
@@ -461,7 +451,21 @@ Using a template loader rather than passing strings to Template or Environment.f
 
 If needed, I could tangle the templates from here and making use of inheritance without giving up to the monolithical literate file.
 
-* Data
+* Data (legacy)
+** Why "legacy"?
+Ho usato questo metodo per un po' di tempo, ma il problema è che l'assemblaggio del JSON è:
+- un po' noioso;
+- inutilmente sequenziale;
+
+ma soprattutto *inutile*, visto che il nostro obiettivo è quello di ottenere sempre e comunque un dizionario in Python.
+Sarebbe assai più comodo bypassare l'esportazione blocco-a-blocco e codificare le informazioni direttamente in elementi org, senza avvalersi di source blocks.
+Per esportare i dati dal formato org, abbiamo due vie:
+- Costruire un org exporter
+- Effettuare un parsing del file org
+
+Visto che, comunque, abbiamo deciso di avvalerci di un ambiente Python (così da impiegare successivamente Jinja2 come motore di templating), la seconda opzione appare più semplice.
+Possiamo avvalerci dell'uso di [[https://github.com/jlumpe/pyorg][pyorg]]. In questo modo, non solo si semplifica la scrittura dei dati, quindi la manutenzione del CV, ma (considerata l'estesa rete di librerie Python) apriamo la strada anche ad un più facile dump di informazioni in JSON, Markdown e altri formati.
+
 ** Personal Info
 # Usiamo "context" come nome per il nostro dizionario ([[https://realpython.com/primer-on-jinja-templating/][è una convenzione]]):
 
@@ -564,7 +568,6 @@ print(json.dumps(basics))
 #+RESULTS: personalinfo-json
 : {"name": "Giovanni Crisalfi", "photo": "propic-ciliegio.jpg", "tagline": "Studente", "homepage": "www.zwitterio.it", "email": "giovanni.crisalfi@protonmail.com", "phone": "+39 3331604917", "location": "Caltagirone, CT", "github": "gicrisf", "twitter": "gicrisf", "dob": "27 Dicembre 1995", "driving": "Patente B"}
 
-# Il problema di questo metodo è che rende l'assemblaggio del JSON un po' noioso ed inutilmente sequenziale. Sarebbe assai più comodo se organizzassimo un dizionario python senza passare da JSON e poi facessimo un dump finale in caso di necessità.
 # La migliore strategia che mi viene in mente per lavorare in python e ridurre questa intricata filatura di stringhe (e sempre evitando l'esecuzione di un blocco unico sul modello dei Jupyter Notebooks) è fare uso della sintassi noweb ed integrare nello stesso blocco sia il dato che la funzione che lo esporta.
 
 # Cosa ce ne facciamo di questo risultato?
@@ -607,9 +610,7 @@ However, this can be seen as an useful sign, because it's always better to avoid
 *** IT
 #+name: personal-statement-it
 #+begin_src org :results output
-Studente di CTF appassionato di spettroscopia e simulazioni computazionali.
-Sostenitore dell'Open Source, vivo su Linux e scrivo sia codice che prosa su Emacs.
-Mi interesso di epistemologia, cinema, fumetti e altre lettere.
+CTF, Università di Bologna. Mi sento a casa solo con una tastiera sotto le dita, le keybindings di Vim, un buffer di Emacs ed un ambiente Linux. Quando non scrivo, leggo.
 #+end_src
 
 *** EN
@@ -623,11 +624,12 @@ Medicinal chemistry student at Unibo • Into spectroscopy and radicals • Linu
 Here we can insert or remove the project that we want to show in the exported CV.
 
 #+name: projects-json
-#+begin_src python :session cv-venv :results output :noweb no-export eval :var esrafel=esrafel-project() :var zhuia=zhuia-project() :var gotosi=gotosi-project() :var unsplash=unsplash-project :var zerm=zerm-project() :var orgcv=orgcv-project() :var target=cv-target
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var esrafel=esrafel-project() :var zhuia=zhuia-project() :var gotosi=gotosi-project() :var unsplash=unsplash-project :var zerm=zerm-project() :var orgcv=orgcv-project() :var target=cv-target :var tochemfig=tochemfig-project()
 general = [
     esrafel,
-    zhuia,
+    tochemfig,
 #    gotosi,
+    orgcv,
     unsplash
 ]
 
@@ -648,7 +650,7 @@ print(json.dumps(projects))
 #+end_src
 
 #+RESULTS: projects-json
-: [{"name": "Esrafel", "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods", "when": "Marzo 2020 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/esrafel", "href": "https://github.com/gicrisf/esrafel"}, "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]}, {"name": "Zhuia", "description": "An elegant but still playful theme for Zola", "when": "Feb. 2022 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/zhuia", "href": "https://github.com/gicrisf/zhuia"}, "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]}, {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}]
+: [{"name": "Esrafel", "description": "Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods", "when": "Marzo 2020 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/esrafel", "href": "https://github.com/gicrisf/esrafel"}, "tags": ["Desktop dev.", "Rust", "GTK", "Spettroscopia"]}, {"name": "tochemfig", "description": "Make Emacs write chemfig code from molfile or SMILES.", "when": "Nov. 2022", "link": {"icon": "Github", "text": "gicrisf/tochemfig", "href": "https://github.com/gicrisf/tochemfig"}, "tags": ["Chemistry", "Lisp", "Emacs", "LaTeX"]}, {"name": "3D renders", "description": "Bio/Chem molecular renders for fun and blogging", "when": "", "link": {"icon": "Unsplash", "text": "@gicrisf", "href": "https://unsplash.com/@gicrisf"}, "tags": ["Grafica", "Chimica", "GIMP", "VMD"]}]
 
 *** Esrafel
 #+name: esrafel-project
@@ -693,9 +695,6 @@ zhuia = {
 
 print(json.dumps(zhuia))
 #+end_src
-
-#+RESULTS: zhuia-project
-: {"name": "Zhuia", "description": "An elegant but still playful theme for Zola", "when": "Feb. 2022 - Marzo 2022", "link": {"icon": "Github", "text": "gicrisf/zhuia", "href": "https://github.com/gicrisf/zhuia"}, "tags": ["Web dev.", "Rust", "Zola", "Tera", "Liquid", "Jinja2"]}
 
 *** Gotosi
 #+name: gotosi-project
@@ -762,7 +761,7 @@ print(json.dumps(z))
 #+begin_src python :session cv-venv :results output
 z = {
     "name": "Org CV",
-    "description": "My Curriculum Vitae, written in Org-mode and powered by LaTeX + Python/Jinja2.",
+    "description": "The engine behind this CV, written in Org-mode and powered by LaTeX + Python/Jinja2.",
     "when": "Agosto 2022",
     "link": {
         "icon": "Github",
@@ -775,17 +774,39 @@ z = {
 print(json.dumps(z))
 #+end_src
 
+*** tochemfig
+#+name: tochemfig-project
+#+begin_src python :session cv-venv :results output
+esrafel = {
+    "name": "tochemfig",
+    "description": "Make Emacs write chemfig code from molfile or SMILES.",
+    "when": "Nov. 2022",
+    "link": {
+        "icon": "Github",
+        "text": "gicrisf/tochemfig",
+        "href": "https://github.com/gicrisf/tochemfig"
+    },
+    "tags": ["Chemistry", "Lisp", "Emacs", "LaTeX"]
+}
+
+print(json.dumps(esrafel))
+#+end_src
+
+#+RESULTS: tochemfig-project
+: {"name": "tochemfig", "description": "Make Emacs write chemfig code from molfile or SMILES.", "when": "Nov. 2022", "link": {"icon": "Github", "text": "gicrisf/tochemfig", "href": "https://github.com/gicrisf/tochemfig"}, "tags": ["Chemistry", "Lisp", "Emacs", "LaTeX"]}
+
 ** Seminars
 #+name: seminars-json
-#+begin_src python :session cv-venv :results output :noweb no-export eval :var festival_scienza_medica=festival-scienza-medica-event() :var sitox=sitox-event :var chemistry_world_driving=chemistry-world-driving-event() :var chemistry_world_accelerating=chemistry-world-accelerating-event() :var drug_targeting=drug-targeting() :var molecular_machines=molecular-machines-days() :var da_scienziati_a_comunicatori=da-scienziati-a-comunicatori()
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var festival_scienza_medica=festival-scienza-medica-event() :var sitox=sitox-event :var chemistry_world_driving=chemistry-world-driving-event() :var chemistry_world_accelerating=chemistry-world-accelerating-event() :var drug_targeting=drug-targeting() :var molecular_machines=molecular-machines-days() :var da_scienziati_a_comunicatori=da-scienziati-a-comunicatori() :var md_today=molecular-dynamics-today()
 s = [
-    festival_scienza_medica,
-    sitox,
-    chemistry_world_driving,
+    # festival_scienza_medica,
+    # sitox,
+    # chemistry_world_driving,
     chemistry_world_accelerating,
     # da_scienziati_a_comunicatori,
     # molecular_machines,
     # drug_targeting,
+    md_today,
 ]
 
 s = [json.loads(x) for x in s]
@@ -793,7 +814,7 @@ print(json.dumps(s))
 #+end_src
 
 #+RESULTS: seminars-json
-: [{"name": "Festival della Scienza Medica", "where": "Palazzo Re Enzo - piazza Nettuno 1 - Bologna", "when": "Anni: 2016 - 2017 - 2018 - 2019"}, {"name": "18\u00b0 Congresso Nazionale Sitox", "where": "Savoia Hotel Regency - Via del Pilastro 2 - 40127 Bologna", "when": "10 Apr. 2018 - 13 Apr. 2018"}, {"name": "Driving the development of bio-based polymers with molecular simulation", "where": "Chemistry World Webinar", "when": "13 Apr. 2022"}, {"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}]
+: [{"name": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy", "where": "Chemistry World Webinar", "when": "24 Maggio 2022"}, {"name": "Molecular Dynamics Today", "where": "Distretto Navile dell'Universit\u00e0 di Bologna", "when": "14-15 Mar. 2018"}]
 
 *** Template
 #+begin_src python :session cv-venv :results output
@@ -910,6 +931,24 @@ print(json.dumps(t))
 #+RESULTS: molecular-machines-days
 : {"name": "Molecular Machines Days", "where": "Dipartimento di Chimica Giacomo Ciamician, Aula I", "when": "21 Nov. 2018"}
 
+*** Molecular Dynamics Today
+14-15 marzo 2018
+Unibo, navile
+
+#+name: molecular-dynamics-today
+#+begin_src python :session cv-venv :results output
+t = {
+    "name": "Molecular Dynamics Today",
+    "where": "Distretto Navile dell'Università di Bologna",
+    "when": "14-15 Mar. 2018",
+}
+
+print(json.dumps(t))
+#+end_src
+
+#+RESULTS: molecular-dynamics-today
+: {"name": "Molecular Dynamics Today", "where": "Distretto Navile dell'Universit\u00e0 di Bologna", "when": "14-15 Mar. 2018"}
+
 ** Skills
 # Questo è uno di quei casi in cui andrebbe anche bene raccogliere i dati come =value= anziché come output, riducendo così la quantità di JSON chunks che fanno avanti e indietro.
 # Potrei farlo per mezzo di una tabella, ma il problema della tabella è la scarsa flessibilità. E se domani volessi associare dei valori di autovalutazione per ogni tag?
@@ -1010,11 +1049,14 @@ print(json.dumps(tesi_sperimentale))
 ** Education
 
 #+name: edu-json
-#+begin_src python :session cv-venv :results output :noweb no-export eval :var diploma=diploma-scientifico-edu() :var ctf=ctf-edu() :var adme=adme-edu()
+#+begin_src python :session cv-venv :results output :noweb no-export eval :var diploma=diploma-scientifico-edu() :var ctf=ctf-edu() :var adme=adme-edu() :var chimica=chimica-edu() :var onsci=onsci-edu() :var cfu24=cfu24-edu()
 edu_list = [
     diploma,
     ctf,
     adme,
+    # cfu24,
+    # onsci,
+    # chimica,
 ]
 
 edu = [json.loads(x) for x in edu_list]
@@ -1071,12 +1113,52 @@ print(json.dumps(pharma_analysis_summer_school))
 #+RESULTS: adme-edu
 : {"name": "Summer School in Pharmaceutical Analysis", "where": "Campus di Rimini - Palazzo Ruffi-Briolini", "when": "18 Sett. 2017 - 20 Sett. 2017", "comment": "Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies"}
 
-*** TODO 24 CFU
-*** TODO ONSCI
-Officina di narrazione della Scienza.
-7-14 settembre a Bologna.
-Dipartimento di Fisica e Astronomia Unibo.
-Tempi e luoghi per pensare con la scienza: nuovi linguaggi per l'educazione STEM.
+*** 24 CFU
+#+name: cfu24-edu
+#+begin_src python :session cv-venv :results output
+cfu24 = {
+    "name": "24 CFU ",
+    "where": "Università di Bologna",
+    "when": "29 Sett. 2021 - 29 Sett. 2022",
+    "comment": "Percorso formativo nelle discipline antropo-psico-pedagogiche e nelle metodologie e tecnologie didattiche"
+}
+
+print(json.dumps(cfu24))
+#+end_src
+
+#+RESULTS: cfu24-edu
+: {"name": "24 CFU ", "where": "Universit\u00e0 di Bologna", "when": "29 Sett. 2021 - 29 Sett. 2022", "comment": "Percorso formativo nelle discipline antropo-psico-pedagogiche e nelle metodologie e tecnologie didattiche"}
+
+*** ONSCI
+#+name: onsci-edu
+#+begin_src python :session cv-venv :results output
+onsci = {
+    "name": "ONSCI: Officina di narrazione della Scienza",
+    "where": "Dipartimento di Fisica e Astronomia Unibo, Via Irnerio, Bologna",
+    "when": "7-14 Sett. 2022",
+    "comment": "Tempi e luoghi per pensare con la scienza: nuovi linguaggi per l'educazione STEM."
+}
+
+print(json.dumps(onsci))
+#+end_src
+
+#+RESULTS: onsci-edu
+: {"name": "ONSCI: Officina di narrazione della Scienza", "where": "Dipartimento di Fisica e Astronomia Unibo, Via Irnerio, Bologna", "when": "7-14 Sett. 2022", "comment": "Tempi e luoghi per pensare con la scienza: nuovi linguaggi per l'educazione STEM."}
+
+*** Chimica (magistrale)
+#+name: chimica-edu
+#+begin_src python :session cv-venv :results output
+ctf = {
+    "name": "Magistrale in Chimica",
+    "where": "Dipartimento di Chimica - Università di Messina",
+    "when": "Sett. 2022 - In corso",
+}
+
+print(json.dumps(ctf))
+#+end_src
+
+#+RESULTS: chimica-edu
+: {"name": "Magistrale in Chimica", "where": "Dipartimento di Chimica - Universit\u00e0 di Messina", "when": "Sett. 2022 - In corso"}
 
 ** Langs
 #+name: langs-json
@@ -1090,6 +1172,54 @@ print(json.dumps(langs))
 
 #+RESULTS: langs-json
 : [{"name": "italiano", "level": 5}, {"name": "Inglese", "level": 4}, {"name": "Francese", "level": 1}]
+
+* Data
+Questa parte fa affidamento sulla presenza di =pyorg= come requisito.
+Ognuno degli elementi a seguire conterrà informazioni necessarie alla costruzione del CV.
+Immaginando di non volere operare modifiche di carattere estetico, questo sarà l'unico paragrafo da aggiornare.
+
+In verità, non bypassiamo l'esportazione in JSON, la affidiamo ad un exporter dedicato:
+
+#+begin_quote
+Rather attempting to parse .org files directly, *pyorg is designed to work with the output of the ox-json Emacs package*. This simply export the AST generated by the org package itself to machine-readable JSON format. This has the advantage of also including all of your personal Org mode setting and customization in Emacs (such as link abbreviations).
+#+end_quote
+
+Intanto, apriamo l'esportato JSON:
+
+#+begin_src python :session cv-venv :results output silent
+with open('data.json') as f:
+    data = json.load(f)
+#+end_src
+
+Proviamo a recuperare i dati e stampare un outline dei paragrafi presenti.
+
+#+begin_src python :session cv-venv :results output
+from pyorg.io import org_doc_from_json
+doc = org_doc_from_json(data)
+print(doc.root.dump_outline())
+#+end_src
+
+#+RESULTS:
+: Root
+:   0. Info
+: None
+
+** Personal Info
+:PROPERTIES:
+:CV_NAME: Giovanni Crisalfi
+:CV_PHOTO: propic-ciliegio.jpg
+:CV_TAGLINE: Studente
+:CV_HOMEPAGE: www.zwitterio.it
+:CV_EMAIL: giovanni.crisalfi@protonmail.com
+:CV_PHONE: +39 3331604917
+:CV_LOCATION: Caltagirone, CT
+:CV_GITHUB: gicrisf
+:CV_TWITTER: gicrisf
+:CV_DOB: 27 Dicembre 1995
+:CV_DRIVING: Patente B
+:END:
+
+Commento Test
 
 * LaTeX
 # L'idea è di esportare tutto con org-exporter per LaTeX, wrappando in blocchi org-mode che a loro volta wrappino del LaTeX puro. Così facendo, possiamo sfruttare esportare direttamente da questo documento, senza avviare =pdflatex= da terminale e anche impiegare le impostazioni interne di org-latex.
@@ -1392,7 +1522,7 @@ Probably, AltaCV already loads =biblatex=, so this command can be skipped.
 
 <<projects-latex()>>
 
-\cvsection{Seminari}
+\cvsection{Seminari recenti}
 
 <<seminars-latex()>>
 

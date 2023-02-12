@@ -1,0 +1,119 @@
+{
+"$$data_type": "org-document",
+"properties": {
+"title": [
+"Data"
+],
+"filetags": [],
+"author": [
+"gicrisf"
+],
+"creator": "Emacs 28.2 (Org mode 9.6)",
+"date": [],
+"description": [],
+"email": "giovanni.crisalfi@protonmail.com",
+"language": "en"
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orgdbea279",
+"properties": {
+"robust-begin": 1,
+"robust-end": 13,
+"post-blank": 1,
+"post-affiliated": 1,
+"mode": "first-section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "keyword",
+"ref": "org93fed74",
+"properties": {
+"key": "TITLE",
+"value": "Data",
+"post-blank": 0,
+"post-affiliated": 1,
+"mode": "top-comment",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orge7056f2",
+"drawer": {
+"CV_NAME": "Giovanni Crisalfi",
+"CV_PHOTO": "propic-ciliegio.jpg",
+"CV_TAGLINE": "Studente",
+"CV_HOMEPAGE": "www.zwitterio.it",
+"CV_EMAIL": "giovanni.crisalfi@protonmail.com",
+"CV_PHONE": "+39 3331604917",
+"CV_LOCATION": "Caltagirone, CT",
+"CV_GITHUB": "gicrisf",
+"CV_TWITTER": "gicrisf",
+"CV_DOB": "27 Dicembre 1995",
+"CV_DRIVING": "Patente B"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Info",
+"pre-blank": 0,
+"robust-begin": 343,
+"robust-end": 357,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 0,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 16,
+"title": [
+"Info"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orgefc45ef",
+"properties": {
+"robust-begin": 23,
+"robust-end": 357,
+"post-blank": 0,
+"post-affiliated": 23,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "org359ded1",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 345,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Commento Test\n"
+]
+}
+]
+}
+]
+}
+]
+}
