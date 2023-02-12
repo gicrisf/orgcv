@@ -2,7 +2,7 @@
 "$$data_type": "org-document",
 "properties": {
 "title": [
-"Data"
+"CV Data"
 ],
 "filetags": [],
 "author": [
@@ -18,10 +18,10 @@
 {
 "$$data_type": "org-node",
 "type": "section",
-"ref": "orgdbea279",
+"ref": "org59edc40",
 "properties": {
 "robust-begin": 1,
-"robust-end": 13,
+"robust-end": 16,
 "post-blank": 1,
 "post-affiliated": 1,
 "mode": "first-section",
@@ -31,10 +31,10 @@
 {
 "$$data_type": "org-node",
 "type": "keyword",
-"ref": "org93fed74",
+"ref": "orgb8b67a0",
 "properties": {
 "key": "TITLE",
-"value": "Data",
+"value": "CV Data",
 "post-blank": 0,
 "post-affiliated": 1,
 "mode": "top-comment",
@@ -47,36 +47,36 @@
 {
 "$$data_type": "org-node",
 "type": "headline",
-"ref": "orge7056f2",
+"ref": "orgc3f0836",
 "drawer": {
-"CV_NAME": "Giovanni Crisalfi",
-"CV_PHOTO": "propic-ciliegio.jpg",
-"CV_TAGLINE": "Studente",
-"CV_HOMEPAGE": "www.zwitterio.it",
-"CV_EMAIL": "giovanni.crisalfi@protonmail.com",
-"CV_PHONE": "+39 3331604917",
-"CV_LOCATION": "Caltagirone, CT",
-"CV_GITHUB": "gicrisf",
-"CV_TWITTER": "gicrisf",
-"CV_DOB": "27 Dicembre 1995",
-"CV_DRIVING": "Patente B"
+"NAME": "Giovanni Crisalfi",
+"PHOTO": "propic-ciliegio.jpg",
+"TAGLINE": "Studente",
+"HOMEPAGE": "www.zwitterio.it",
+"EMAIL": "giovanni.crisalfi@protonmail.com",
+"PHONE": "+39 3331604917",
+"LOCATION": "Caltagirone, CT",
+"GITHUB": "gicrisf",
+"TWITTER": "gicrisf",
+"DOB": "27 Dicembre 1995",
+"DRIVING": "Patente B"
 },
 "properties": {
 "tags-all": [],
 "raw-value": "Info",
 "pre-blank": 0,
-"robust-begin": 343,
-"robust-end": 357,
+"robust-begin": 313,
+"robust-end": 327,
 "level": 1,
 "priority": null,
 "tags": [],
 "todo-keyword": null,
 "todo-type": null,
-"post-blank": 0,
+"post-blank": 1,
 "footnote-section-p": false,
 "archivedp": false,
 "commentedp": false,
-"post-affiliated": 16,
+"post-affiliated": 19,
 "title": [
 "Info"
 ],
@@ -87,12 +87,12 @@
 {
 "$$data_type": "org-node",
 "type": "section",
-"ref": "orgefc45ef",
+"ref": "org6205894",
 "properties": {
-"robust-begin": 23,
-"robust-end": 357,
-"post-blank": 0,
-"post-affiliated": 23,
+"robust-begin": 26,
+"robust-end": 327,
+"post-blank": 1,
+"post-affiliated": 26,
 "mode": "section",
 "granularity": null
 },
@@ -100,16 +100,1149 @@
 {
 "$$data_type": "org-node",
 "type": "paragraph",
-"ref": "org359ded1",
+"ref": "orgbb7be73",
 "properties": {
 "post-blank": 0,
-"post-affiliated": 345,
+"post-affiliated": 315,
 "mode": null,
 "granularity": null
 },
 "contents": [
 "Commento Test\n"
 ]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orgc413848",
+"drawer": {
+
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Statement",
+"pre-blank": 0,
+"robust-begin": 344,
+"robust-end": 511,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 330,
+"title": [
+"Statement"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org0751492",
+"properties": {
+"robust-begin": 342,
+"robust-end": 511,
+"post-blank": 1,
+"post-affiliated": 342,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "org9a7137a",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 342,
+"mode": "planning",
+"granularity": null
+},
+"contents": [
+"CTF, Università di Bologna. Mi sento a casa solo con una tastiera sotto le dita, le keybindings di Vim, un buffer di Emacs ed un ambiente Linux. Quando non scrivo, leggo.\n"
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org7cc2a2a",
+"drawer": {
+
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Projects",
+"pre-blank": 0,
+"robust-begin": 527,
+"robust-end": 1055,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 514,
+"title": [
+"Projects"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orgbae8ddf",
+"drawer": {
+"NAME": "Esrafel",
+"WHEN": "Marzo 2020 - Marzo 2022",
+"LINK_ICON": "Github",
+"LINK_TEXT": "gicrisf/esrafel",
+"LINK_HREF": "https://github.com/gicrisf/esrafel"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Esrafel",
+"pre-blank": 0,
+"robust-begin": 727,
+"robust-end": 806,
+"level": 2,
+"priority": null,
+"tags": [
+"rust",
+"GTK",
+"desktop",
+"Spettroscopia"
+],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 525,
+"title": [
+"Esrafel"
+],
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org8f575f5",
+"properties": {
+"robust-begin": 569,
+"robust-end": 806,
+"post-blank": 1,
+"post-affiliated": 569,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "org4578a0d",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 729,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Software for least-squares fitting of ESR/EPR spectra with Monte Carlo methods\n"
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orged8fc52",
+"drawer": {
+"NAME": "tochemfig",
+"WHEN": "Nov. 2022",
+"LINK_ICON": "Github",
+"LINK_TEXT": "gicrisf/tochemfig",
+"LINK_HREF": "https://github.com/gicrisf/tochemfig"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "tochemfig",
+"pre-blank": 0,
+"robust-begin": 1001,
+"robust-end": 1055,
+"level": 2,
+"priority": null,
+"tags": [
+"Chemistry",
+"Lisp",
+"Emacs",
+"LaTeX"
+],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 809,
+"title": [
+"tochemfig"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orgf2def68",
+"properties": {
+"robust-begin": 851,
+"robust-end": 1055,
+"post-blank": 1,
+"post-affiliated": 851,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "org9233334",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 1003,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Make Emacs write chemfig code from molfile or SMILES.\n"
+]
+}
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org4d5ab29",
+"drawer": {
+
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Seminars",
+"pre-blank": 0,
+"robust-begin": 1071,
+"robust-end": 1560,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1058,
+"title": [
+"Seminars"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orgaac37d4",
+"drawer": {
+"NAME": "Accelerating first-in-class and best-in-class programs using a large-scale digital chemistry strategy",
+"WHEN": "24 Maggio 2022",
+"WHERE": "Chemistry World Webinar"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Chemistry World, Accelerating",
+"pre-blank": 0,
+"robust-begin": 1283,
+"robust-end": 1296,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1069,
+"title": [
+"Chemistry World, Accelerating"
+],
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org8754d36",
+"properties": {
+"robust-begin": 1102,
+"robust-end": 1296,
+"post-blank": 1,
+"post-affiliated": 1102,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org1c61007",
+"drawer": {
+"NAME": "Da scienziati a comunicatori scientifici",
+"WHEN": "3 Mar. 2017 - 28 Apr. 2017",
+"WHERE": "Via Irnerio 48, Bologna - Aula B di Anatomia"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Da scienziati a comunicatori",
+"pre-blank": 0,
+"robust-begin": 1484,
+"robust-end": 1560,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1299,
+"title": [
+"Da scienziati a comunicatori"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orgc4eaefc",
+"properties": {
+"robust-begin": 1331,
+"robust-end": 1560,
+"post-blank": 1,
+"post-affiliated": 1331,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "org56c9f9b",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 1486,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Il ruolo di comunicazione della scienza nel rapporto tra scienza e società.\n"
+]
+}
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org339d955",
+"drawer": {
+
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Skills",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 0,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1563,
+"title": [
+"Skills"
+],
+"mode": null,
+"granularity": null
+},
+"contents": []
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orge4aaf77",
+"drawer": {
+
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Experiences",
+"pre-blank": 0,
+"robust-begin": 1588,
+"robust-end": 1918,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1572,
+"title": [
+"Experiences"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org695d137",
+"drawer": {
+"NAME": "Tirocinio in Farmacia Ospedaliera",
+"WHEN": "Ottobre 2020 - Luglio 2021",
+"WHERE": "Ospedale Gravina di Caltagirone"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Farmacia Ospedaliera",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1586,
+"title": [
+"Farmacia Ospedaliera"
+],
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orge8795cd",
+"properties": {
+"robust-begin": 1610,
+"robust-end": 1742,
+"post-blank": 1,
+"post-affiliated": 1610,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org056a3b4",
+"drawer": {
+"NAME": "Tirocinio per tesi sperimentale",
+"WHEN": "Ottobre 2019 - Maggio 2020",
+"WHERE": "Dipartimento di \\\"Chimica Giacomo Ciamician\\\" - Unibo"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Tesi sperimentale",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1745,
+"title": [
+"Tesi sperimentale"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orgd286171",
+"properties": {
+"robust-begin": 1766,
+"robust-end": 1918,
+"post-blank": 1,
+"post-affiliated": 1766,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org9e9080e",
+"drawer": {
+
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Education",
+"pre-blank": 0,
+"robust-begin": 1935,
+"robust-end": 3485,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1921,
+"title": [
+"Education"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org14a4378",
+"drawer": {
+"NAME": "Diploma Liceo Scientifico",
+"WHEN": "Sett. 2009 - Giugno 2014",
+"WHERE": "Liceo Scientifico E. Majorana - Caltagirone"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Diploma Scientifico",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 1933,
+"title": [
+"Diploma Scientifico"
+],
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org36b34ed",
+"properties": {
+"robust-begin": 1956,
+"robust-end": 2090,
+"post-blank": 1,
+"post-affiliated": 1956,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org7aac72a",
+"drawer": {
+"NAME": "Magistrale a ciclo unico in Chimica e Tecnologia Farmaceutiche",
+"WHEN": "Sett. 2014 - Marzo 2023",
+"WHERE": "Dipartimento di Farmacia e Biotecnologie FABIT - Università di Bologna"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "CTF",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 2093,
+"title": [
+"CTF"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org42badd8",
+"properties": {
+"robust-begin": 2100,
+"robust-end": 2297,
+"post-blank": 1,
+"post-affiliated": 2100,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orge2b65e6",
+"drawer": {
+"NAME": "Summer School in Pharmaceutical Analysis",
+"WHEN": "18 Sett. 2017 - 20 Sett. 2017",
+"WHERE": "Campus di Rimini - Palazzo Ruffi-Briolini"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Summer School in Pharma Analysis",
+"pre-blank": 0,
+"robust-begin": 2489,
+"robust-end": 2605,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 2300,
+"title": [
+"Summer School in Pharma Analysis"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org42732b8",
+"properties": {
+"robust-begin": 2336,
+"robust-end": 2605,
+"post-blank": 1,
+"post-affiliated": 2336,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "orgffcf260",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 2491,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Advanced Analytical Methodologies for Adsorption, Distribution, Metabolism, Excretion and Toxicity (ADMET) Studies.\n"
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org6ba9257",
+"drawer": {
+"NAME": "Bioinformatics and Deep learning for biodata analysis",
+"WHEN": "February 14-27, 2023",
+"WHERE": "Department of Pharmacy and Biotechnology"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Winter School in DL for biodata",
+"pre-blank": 0,
+"robust-begin": 2799,
+"robust-end": 2813,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 2608,
+"title": [
+"Winter School in DL for biodata"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orgb2aa7da",
+"properties": {
+"robust-begin": 2643,
+"robust-end": 2813,
+"post-blank": 1,
+"post-affiliated": 2643,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org65e82fe",
+"drawer": {
+"NAME": "24 CFU",
+"WHEN": "29 Sett. 2021 - 29 Sett. 2022",
+"WHERE": "Università di Bologna"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "24 CFU",
+"pre-blank": 0,
+"robust-begin": 2925,
+"robust-end": 3032,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 2816,
+"title": [
+"24 CFU"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "orga124330",
+"properties": {
+"robust-begin": 2826,
+"robust-end": 3032,
+"post-blank": 1,
+"post-affiliated": 2826,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "orgb01c1a4",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 2927,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Percorso formativo nelle discipline antropo-psico-pedagogiche e nelle metodologie e tecnologie didattiche.\n"
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org2b2a6b7",
+"drawer": {
+"NAME": "Officina di narrazione della Scienza (ONSCI)",
+"WHEN": "7-14 Sett. 2022",
+"WHERE": "Dipartimento di Fisica e Astronomia Unibo, Via Irnerio, Bologna"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "ONSCI",
+"pre-blank": 0,
+"robust-begin": 3209,
+"robust-end": 3291,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 3035,
+"title": [
+"ONSCI"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org30ce98f",
+"properties": {
+"robust-begin": 3044,
+"robust-end": 3291,
+"post-blank": 1,
+"post-affiliated": 3044,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "org86eadd7",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 3211,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Tempi e luoghi per pensare con la scienza: nuovi linguaggi per l'educazione STEM.\n"
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org6618033",
+"drawer": {
+"NAME": "Magistrale in Chimica",
+"WHERE": "Dipartimento di Chimica - Università di Messina",
+"WHEN": "Sett. 2022 - In corso"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Chimica (Magistrale)",
+"pre-blank": 0,
+"robust-begin": 3455,
+"robust-end": 3485,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": "TODO",
+"todo-type": "todo",
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 3294,
+"title": [
+"Chimica (Magistrale)"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org0c48304",
+"properties": {
+"robust-begin": 3323,
+"robust-end": 3485,
+"post-blank": 1,
+"post-affiliated": 3323,
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "paragraph",
+"ref": "orgadf257a",
+"properties": {
+"post-blank": 0,
+"post-affiliated": 3457,
+"mode": null,
+"granularity": null
+},
+"contents": [
+"Curriculum dei nanomateriali.\n"
+]
+}
+]
+}
+]
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orgeec172f",
+"drawer": {
+
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Langs",
+"pre-blank": 0,
+"robust-begin": 3498,
+"robust-end": 3618,
+"level": 1,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 0,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 3488,
+"title": [
+"Langs"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org5ed7672",
+"drawer": {
+"LEVEL": "5"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Italiano",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 3496,
+"title": [
+"Italiano"
+],
+"mode": "section",
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org57f44aa",
+"properties": {
+"robust-begin": 3508,
+"robust-end": 3535,
+"post-blank": 1,
+"post-affiliated": 3508,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "org78375b6",
+"drawer": {
+"LEVEL": "4"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Inglese",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 1,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 3538,
+"title": [
+"Inglese"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org0430c3f",
+"properties": {
+"robust-begin": 3549,
+"robust-end": 3576,
+"post-blank": 1,
+"post-affiliated": 3549,
+"mode": "section",
+"granularity": null
+},
+"contents": []
+}
+]
+},
+{
+"$$data_type": "org-node",
+"type": "headline",
+"ref": "orgd086d8c",
+"drawer": {
+"LEVEL": "1"
+},
+"properties": {
+"tags-all": [],
+"raw-value": "Francese",
+"pre-blank": 0,
+"robust-begin": null,
+"robust-end": null,
+"level": 2,
+"priority": null,
+"tags": [],
+"todo-keyword": null,
+"todo-type": null,
+"post-blank": 0,
+"footnote-section-p": false,
+"archivedp": false,
+"commentedp": false,
+"post-affiliated": 3579,
+"title": [
+"Francese"
+],
+"mode": null,
+"granularity": null
+},
+"contents": [
+{
+"$$data_type": "org-node",
+"type": "section",
+"ref": "org47b67ee",
+"properties": {
+"robust-begin": 3591,
+"robust-end": 3618,
+"post-blank": 0,
+"post-affiliated": 3591,
+"mode": "section",
+"granularity": null
+},
+"contents": []
 }
 ]
 }
